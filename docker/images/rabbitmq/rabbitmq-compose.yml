@@ -1,0 +1,27 @@
+version: "3.8"
+
+services: 
+  rabbitmq:
+    container_name: compracerta-rabbitmq
+    image: rabbitmq:alpine
+    env_file: 
+      - ./.env.rabbitmq
+    ports:
+      - "${RABBITMQ_PORT_EXPOSED}:${RABBITMQ_PORT}"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+      RABBITMQ_DEFAULT_VHOST: 'compracerta-vhost'
+    volumes:
+      - "compracerta-rabbit-volume:/var/lib/rabbitmq"
+    networks:
+      - compracerta-rabbit-network
+    restart: unless-stopped
+
+networks:
+  compracerta-rabbit-network:
+    driver: bridge
+
+volumes: 
+  compracerta-rabbit-volume:
+    driver: local

@@ -1,0 +1,35 @@
+FROM php:8.0.3-fpm
+
+RUN apt-get update \
+ && apt-get install -y \
+        libpq-dev \
+        libz-dev \
+        curl \
+        openssl \
+        nano
+
+# Common php-ext and requirements
+#  && docker-php-ext-install pcntl \
+#  && docker-php-ext-install session \
+#  && docker-php-ext-install phar \
+#  && docker-php-ext-install iconv \
+
+
+RUN docker-php-ext-install \
+        pgsql \
+        pdo \
+        pdo_pgsql
+        # intl
+        # opcache \
+        # sockets \
+        # xsl \
+        # sysvsem \
+
+RUN rm -rf /var/lib/apt/lists/*
+
+RUN chown -R root:www-data /var/www/html
+RUN chmod u+rwx,g+rx,o+rx /var/www/html
+RUN find /var/www/html -type d -exec chmod u+rwx,g+rx,o+rx {} +
+RUN find /var/www/html -type f -exec chmod u+rw,g+rw,o+r {} +
+
+CMD [ "php-fpm" ]

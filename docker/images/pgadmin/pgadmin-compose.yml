@@ -1,0 +1,23 @@
+version: "3.8"
+
+services: 
+  pgadmin:
+    container_name: compracerta-admin
+    env_file: ./.env.pgadmin
+    image: dpage/pgadmin4:4.10
+    ports:
+      - "${PGADMIN_LISTEN_PORT}:${PGADMIN_REVERSE_EXPOSE_PORT}"
+    volumes:
+      - "const-volume:/var/lib/pgadmin"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_LISTEN_PORT: ${PGADMIN_LISTEN_PORT}
+    depends_on:
+      - postgres
+    networks:
+      - compracerta-admin
+    logging:
+      driver: none
+    restart: unless-stopped
+      
