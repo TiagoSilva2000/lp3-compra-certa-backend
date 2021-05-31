@@ -3,20 +3,28 @@
 
 
   class User extends TimeBaseUIDEntity {
+    protected Account $account;
 
     public function __construct(
-      $uid, 
-      $createdAt, 
-      $updatedAt, 
-      $deletedAt,
-      private string $email,
-      private string $first_name,
-      private string $last_name,
-      private string $password,
-      private string $phone,
-      private string $cpf,
+      protected string $email,
+      protected string $first_name,
+      protected string $last_name,
+      protected string $password,
+      protected string $phone,
+      protected string $cpf,
     ) {
-      parent::__construct($uid, $createdAt, $updatedAt, $deletedAt);
+      parent::__construct();
+    }
+
+    public function resetPassword(string $old, string $new, string $newConfirm) {
+      if ($new != $newConfirm) {
+        throw new Error("passwords do not match");
+      }
+      if ($this->password != $old) {
+        throw new Error("this is not the old password");
+      }
+      
+      $this->password = $new;
     }
 
     public function getEmail(): string {
@@ -30,10 +38,6 @@
     public function getLastName(): string {
       return $this->last_name;
     }
-
-    // public function getPassword(): string {
-    //   return $this->password;
-    // }
 
     public function getPhone(): string {
       return $this->phone;
@@ -71,6 +75,26 @@
       return $this->first_name . $this->last_name;
     }
 
+
+    /**
+     * Get the value of account
+     */ 
+    public function getAccount()
+    {
+        return $this->account;
+    }
+
+    /**
+     * Set the value of account
+     *
+     * @return  self
+     */ 
+    public function setAccount($account)
+    {
+        $this->account = $account;
+
+        return $this;
+    }
   }
 
 ?>

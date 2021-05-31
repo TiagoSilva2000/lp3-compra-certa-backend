@@ -5,14 +5,14 @@
   class Payment extends TimeBaseUIDEntity {
 
     public function __construct (
-      private int $paymentOptionsId,
-      private int $paymentStatusId,
+      private PaymentOption $paymentOption,
+      private string $paymentStatus,
       private float $total,
-    ) {}
+    ) {
+      parent::__construct();
+    }
 
     
-
-
       /**
        * Get the value of paymentOptionsId
        */

@@ -7,6 +7,7 @@
       private string $token,
       private string $device,
       private bool $isTrusted,
+      private bool $active
     ) {}
 
       /**

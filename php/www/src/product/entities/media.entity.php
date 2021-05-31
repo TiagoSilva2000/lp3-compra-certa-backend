@@ -8,7 +8,9 @@
       private string $path,
       private string $ext,
       private bool $main
-    ) {}
+    ) {
+      parent::__construct();
+    }
 
 
       /**

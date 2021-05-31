@@ -15,8 +15,10 @@
       private string $owner_name,
       private string $owner_phone,
       private string $notes,
-      private bool $isDefault,
-    ) {}
+      private bool $isDefault = false,
+    ) {
+      parent::__construct();
+    }
 
       /**
        * Get the value of customerId

@@ -29,7 +29,7 @@
   class TimeBaseIDEntity extends BaseIDEntity {
     use DefaultDateData;
 
-    public function __construct ($id) {
+    public function __construct (int $id = null) {
       parent::__construct($id);
       $this->initDates();
     }
@@ -40,7 +40,7 @@
     use DefaultDateData;
 
     public function __construct (
-      $uid, 
+      string $uid = null, 
     ) {
       parent::__construct($uid);
       $this->initDates();

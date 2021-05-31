@@ -6,7 +6,9 @@
     public function __construct (
       private string $name,
       private int $customerId,
-    ) {}
+    ) {
+      parent::__construct();
+    }
 
       /**
        * Get the value of name

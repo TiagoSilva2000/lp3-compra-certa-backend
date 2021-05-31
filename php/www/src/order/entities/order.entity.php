@@ -2,57 +2,64 @@
   require_once('../../extendables/time-base.entity.php');
 
   class Order extends TimeBaseUIDEntity {
-    private DateTime $orderedAt;
+    
 
     public function __construct (
-      private int $paymentId,
-      private int $orderTrackingId,
-      private int $customerId,
-      private int $addressId,
+      private Payment $payment,
+      private array $products,
+      private string $customerId,
+      private Address $address,
+      private string $status = "CREATED",
+      private array $trackingPoints = [],
+      private DateTime $orderedAt = new DateTime(),
+      private float $rating = null,
     ) {
-      $this->orderedAt = new DateTime();
+      parent::__construct();
     }
 
+    public function getStatus(): string {
+      return $this->status;
+    }
+
+    public function setStatus(string $status) {
+      $this->status = $status;
+    }
+
+    public function setRating(float $rating) {
+      $this->rating = $rating;
+    }
+
+    public function getRating() {
+      return $this->rating;
+    }
+
+    public function pushTrackingPoint(OrderTracking $tracking) {
+      array_push($this->trackingPoints, $tracking);
+    }
 
       /**
-       * Get the value of paymentId
-       */
-      public function getPaymentId()
+       * Get the value of payment
+       */ 
+      public function getPayment()
       {
-            return $this->paymentId;
+            return $this->payment;
       }
 
       /**
-       * Set the value of paymentId
-       */
-      public function setPaymentId($paymentId) : self
+       * Set the value of payment
+       *
+       * @return  self
+       */ 
+      public function setPayment($payment)
       {
-            $this->paymentId = $paymentId;
-
-            return $this;
-      }
-
-      /**
-       * Get the value of orderTrackingId
-       */
-      public function getOrderTrackingId()
-      {
-            return $this->orderTrackingId;
-      }
-
-      /**
-       * Set the value of orderTrackingId
-       */
-      public function setOrderTrackingId($orderTrackingId) : self
-      {
-            $this->orderTrackingId = $orderTrackingId;
+            $this->payment = $payment;
 
             return $this;
       }
 
       /**
        * Get the value of customerId
-       */
+       */ 
       public function getCustomerId()
       {
             return $this->customerId;
@@ -60,8 +67,10 @@
 
       /**
        * Set the value of customerId
-       */
-      public function setCustomerId($customerId) : self
+       *
+       * @return  self
+       */ 
+      public function setCustomerId($customerId)
       {
             $this->customerId = $customerId;
 
@@ -69,21 +78,31 @@
       }
 
       /**
-       * Get the value of addressId
-       */
-      public function getAddressId()
+       * Get the value of address
+       */ 
+      public function getAddress()
       {
-            return $this->addressId;
+            return $this->address;
       }
 
       /**
-       * Set the value of addressId
-       */
-      public function setAddressId($addressId) : self
+       * Set the value of address
+       *
+       * @return  self
+       */ 
+      public function setAddress($address)
       {
-            $this->addressId = $addressId;
+            $this->address = $address;
 
             return $this;
+      }
+
+      /**
+       * Get the value of orderedAt
+       */ 
+      public function getOrderedAt()
+      {
+            return $this->orderedAt;
       }
   }
 

@@ -11,7 +11,6 @@
     ) {}
 
 
-
       /**
        * Get the value of email
        */

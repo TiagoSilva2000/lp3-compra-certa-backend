@@ -2,15 +2,14 @@
   require_once('../../extendables/time-base.entity.php');
 
   class OrderTracking extends TimeBaseUIDEntity {
-    private DateTime $orderedAt;
 
     public function __construct (
-      private DateTime $enterTime,
-      private string $placeZipcode,
       private int $orderId,
-      private int $orderStatusID,
+      private string $placeZipcode,
+      private string $orderStatus,
+      private DateTime $enterTime = new DateTime(),
     ) {
-      $this->orderedAt = new DateTime();
+      parent::__construct();
     }
 
 
@@ -71,7 +70,7 @@
       /**
        * Get the value of orderStatusID
        */
-      public function getOrderStatusID()
+      public function getOrderStatus()
       {
             return $this->orderStatusID;
       }
@@ -79,9 +78,9 @@
       /**
        * Set the value of orderStatusID
        */
-      public function setOrderStatusID($orderStatusID) : self
+      public function setOrderStatus($orderStatus) : self
       {
-            $this->orderStatusID = $orderStatusID;
+            $this->orderStatus = $orderStatus;
 
             return $this;
       }

@@ -3,11 +3,13 @@
 
   class PriceHistory extends TimeBaseUIDEntity {
 
+
     public function __construct(
       private int $productId,
-      private int $pricingRuleId,
       private float $value,
-      private DateTime $expiredAt, 
+      private int $divided_max = 12,
+      private float $paymentDiscount = 1,
+      private DateTime $expiredAt = null, 
     ) {}
 
 
