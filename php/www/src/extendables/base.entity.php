@@ -15,7 +15,7 @@
 
   abstract class BaseUIDEntity {
 
-    public function __construct(protected string $uid = null) {
+    public function __construct(protected ?string $uid = null) {
       if ($this->uid == null)
         $this->uid = "generate random uid";
     }

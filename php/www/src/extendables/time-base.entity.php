@@ -1,5 +1,5 @@
 <?php
-  require_once('./base-id.entity.php');
+  require_once(__DIR__ . '/base.entity.php');
 
   trait DefaultDateData {
     protected DateTime $createdAt;
