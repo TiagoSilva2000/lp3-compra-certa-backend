@@ -2,7 +2,7 @@
   require (__DIR__ . "/../../extendables/time-base.entity.php");
   // require_once('../../extendables/time-base.entityphp');
 
-  class User extends TimeBaseUIDEntity {
+  class User extends TimeBaseIDEntity {
     protected Account $account;
 
     public function __construct(
@@ -12,6 +12,7 @@
       protected string $password,
       protected string $phone,
       protected string $cpf,
+      protected int $user_type
     ) {
       parent::__construct();
     }
