@@ -1,5 +1,5 @@
 <?php
-  require (__DIR__ . "/../../extendables/time-base.entity.php");
+  require_once (__DIR__ . "/../../extendables/time-base.entity.php");
   // require_once('../../extendables/time-base.entityphp');
 
   class User extends TimeBaseIDEntity {

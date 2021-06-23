@@ -1,6 +1,6 @@
 <?php
-  require (__DIR__ . '/../repositories/user.repository.php');
-  require (__DIR__ . '/../dtos/user-dtos.php');
+  require_once (__DIR__ . '/../repositories/user.repository.php');
+  require_once (__DIR__ . '/../dtos/user.dtos.php');
 
   class UserService {
 

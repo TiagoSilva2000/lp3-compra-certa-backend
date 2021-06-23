@@ -1,6 +1,6 @@
 <?php
-  require (__DIR__ . '/../entities/user.entity.php');
-  require (__DIR__ . '/../../database/connection.php');  
+  require_once (__DIR__ . '/../entities/user.entity.php');
+  require_once (__DIR__ . '/../../database/connection.php');  
   class UserRepository {
     public static function createUser(CreateUserDto $createUserDto): GetUserDto {
       $sql = Connection::$conn->prepare("INSERT INTO user (email, first_name, last_name, password, phone, cpf, user_type_id)
