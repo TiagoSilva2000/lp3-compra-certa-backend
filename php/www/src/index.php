@@ -1,14 +1,14 @@
 <?php
-  require __DIR__ . '/vendor/autoload.php';
+  require_once (__DIR__ . '/vendor/autoload.php');
   use Psr\Http\Message\ResponseInterface as Response;
   use Psr\Http\Message\ServerRequestInterface as Request;
   use Slim\Factory\AppFactory;
   require_once ('./user/controllers/user.controller.php');
   require_once ('./order/controllers/order.controller.php');
-  require_once ('./address/controllres/address.controller.php');
+  require_once ('./address/controllers/address.controller.php');
   require_once ('./product/controllers/product.controller.php');
   require_once ('./payment/controllers/payment.controller.php');
-  require_once ('./auth/controller/auth.controller.php');
+  require_once ('./auth/controllers/auth.controller.php');
   require_once ('./dash/controllers/dash.controller.php');
 
 
@@ -23,9 +23,9 @@
   $app->delete('/users/{id}', \UserController::class . ':delete');
   $app->patch('/users/{id}', \UserController::class . ':recover');
 
-  $app->get('/product/home', \ProductController::class . ':home');
-  $app->get('/product', \ProductController::class . ':list');
-  $app->get('/product/{id}', \ProductController::class . ':read');
+  $app->get('/products/home', \ProductController::class . ':home');
+  $app->get('/products', \ProductController::class . ':list');
+  $app->get('/products/{id}', \ProductController::class . ':read');
   
   $app->get('/wishlist', \ProductController::class . ':listWishlist');
   $app->post('/product/{id}/wishlist', \ProductController::class . ':addToWishlist');
@@ -36,7 +36,7 @@
   $app->get('/order', \OrderController::class, ':list');
   $app->patch('/order/{id}', \OrderController::class, ':updateStatus');
   $app->patch('/order/{id}/received', \OrderController::class, ':setReceived');
-  $app->get('/order/control', \OrderController::class, ':controlList');
+  $app->get('/order-control', \OrderController::class, ':controlList');
   $app->post('/order/{id}/rating', \OrderController::class, ':rate');
 
   $app->post('/payment', \PaymentController::class, ':create');
