@@ -31,6 +31,19 @@
   $app->post('/product/{id}/wishlist', \ProductController::class . ':addToWishlist');
   $app->delete('/product/{id}/wishlist', \ProductController::class . ':removeFromWishlist');
 
+  $app->post('/address', \PaymentController::class, ':create');
+  $app->get('/address/{id}', \PaymentController::class, ':read');
+  $app->get('/address', \PaymentController::class, ':list');
+  $app->put('/address/{id}', \PaymentController::class, ':update');
+  $app->patch('/address/{id}', \PaymentController::class, ':makeDefault');
+  $app->delete('/address/{id}', \PaymentController::class, ':delete');
+
+  $app->post('/payment', \PaymentController::class, ':create');
+  $app->get('/payment/{id}', \PaymentController::class, ':read');
+  $app->get('/payment', \PaymentController::class, ':list');
+  $app->patch('/payment/{id}', \PaymentController::class, ':makeDefault');
+  $app->delete('/payment/{id}', \PaymentController::class, ':delete');
+
   $app->post('/order', \OrderController::class, ':create');
   $app->get('/order/{id}', \OrderController::class, ':read');
   $app->get('/order', \OrderController::class, ':list');
@@ -38,12 +51,6 @@
   $app->patch('/order/{id}/received', \OrderController::class, ':setReceived');
   $app->get('/order-control', \OrderController::class, ':controlList');
   $app->post('/order/{id}/rating', \OrderController::class, ':rate');
-
-  $app->post('/payment', \PaymentController::class, ':create');
-  $app->get('/payment/{id}', \PaymentController::class, ':read');
-  $app->get('/payment', \PaymentController::class, ':list');
-  $app->patch('/payment/{id}', \PaymentController::class, ':makeDefault');
-  $app->delete('/payment/{id}', \PaymentController::class, ':delete');
 
   $app->post('/auth', \AuthController::class, ':login');
   $app->delete('/auth/{token}', \AuthController::class, ':logout');
