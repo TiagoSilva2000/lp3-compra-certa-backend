@@ -1,59 +1,74 @@
-version: '3'
+version: '3.8'
 services:
-    nginx:
-        container_name: compracerta-nginx
-        restart: always
-        image: nginx:1.13.3
-        command:  [ "nginx" ]
-        build: 
-            context: ./docker/images/nginx
-            dockerfile: Dockerfile
-        volumes:
-            - ${APPLICATION}:/var/www/html
-            - ./config/nginx/logs/:/var/log/nginx
-            - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
-            - ./config/nginx/sites/:/etc/nginx/sites-available
-            - ./config/nginx/conf.d:/etc/nginx/conf.d
+    # nginx:
+    #     container_name: compracerta-nginx
+    #     restart: always
+    #     image: nginx:1.13.3
+    #     command:  [ "nginx" ]
+    #     build: 
+    #         context: ./docker/images/nginx
+    #         dockerfile: Dockerfile
+    #     volumes:
+    #         - ${APPLICATION}:/var/www/html
+    #         - ./config/nginx/logs/:/var/log/nginx
+    #         - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
+    #         - ./config/nginx/sites/:/etc/nginx/sites-available
+    #         - ./config/nginx/conf.d:/etc/nginx/conf.d
 
-        ports:
-            - "${NGINX_HOST_HTTP_PORT}:80"
-            - "${NGINX_HOST_HTTPS_PORT}:443"
-        links:
-            - php-fpm
-        networks:
-            - compracerta-network
+    #     ports:
+    #         - "${NGINX_HOST_HTTP_PORT}:80"
+    #         - "${NGINX_HOST_HTTPS_PORT}:443"
+    #     links:
+    #         - php-fpm
+    #     networks:
+    #         - compracerta-network
 
-    php-fpm:
-        container_name: compracerta-php-fpm
-        restart: always
-        build:
-            context: ./docker
-            dockerfile: Dockerfile.local
-        expose:
-            - "9000"    
-        volumes:
-            - ${APPLICATION}:/var/www/html
-        networks:
-            - compracerta-network
+    # php-fpm:
+    #     container_name: compracerta-php-fpm
+    #     restart: always
+    #     build:
+    #         context: ./docker
+    #         dockerfile: Dockerfile.local
+    #     expose:
+    #         - "9000"    
+    #     volumes:
+    #         - ${APPLICATION}:/var/www/html
+    #     networks:
+    #         - compracerta-network
 
-    postgres:
-        container_name: compracerta-postgres
-        image: postgres:12-alpine
-        expose:
-            - "${DB_PORT}"
-        volumes:
-            - "compracerta-volume:/var/lib/postgresql/data"
-        environment:
-            POSTGRES_DB: ${DB_DATABASE}
-            POSTGRES_USER: ${DB_USER}
-            POSTGRES_PASSWORD: ${DB_PASSWORD}
-        networks:
-            - compracerta-network
-            - compracerta-pgadmin
-        logging: 
-            driver: none
-        restart: unless-stopped
-    
+    # postgres:
+    #     container_name: compracerta-postgres
+    #     image: postgres:12-alpine
+    #     ports:
+    #         - "${EXPOSED_DB_PORT}:${DB_PORT}"
+    #     volumes:
+    #         - "compracerta-volume:/var/lib/postgresql/data"
+    #     environment:
+    #         POSTGRES_DB: ${DB_NAME}
+    #         POSTGRES_USER: ${DB_USER}
+    #         POSTGRES_PASSWORD: ${DB_PASSWORD}
+    #     networks:
+    #         - compracerta-network
+    #         - compracerta-pgadmin
+    #     logging: 
+    #         driver: none
+    #     restart: unless-stopped
+    mysql:
+      image: mysql:8
+      container_name: compracerta-mysql
+      ports:
+        - "${EXPOSED_DB_PORT}:${DB_PORT}"
+      volumes:
+        - "compracerta-volume:/var/lib/mysql"
+      environment:
+        MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+        MYSQL_DATABASE: ${DB_NAME}
+        MYSQL_USER: ${DB_USER}
+        MYSQL_PASSWORD: ${DB_PASSWORD}
+      networks:
+        - compracerta-network
+      restart: unless-stopped
+
 volumes: 
     compracerta-volume:
         driver: "local"
@@ -61,6 +76,6 @@ volumes:
 networks: 
     compracerta-network:
         driver: bridge
-    compracerta-pgadmin:
-        driver: bridge
+#     compracerta-pgadmin:
+#         driver: bridge
       

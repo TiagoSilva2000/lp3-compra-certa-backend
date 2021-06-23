@@ -10,7 +10,6 @@
 
   class UserController {
 
-
     public static function create(Request $request, Response $response): Response {
       $user = UserService::create();
       return ControllerHelper::formatResponse($response, $user);

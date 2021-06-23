@@ -1,0 +1,32 @@
+1) endpoints:
+  GET /product - listar todos os produtos. Aceitar query params para filtragem
+  GET /product/{id} - informações sobre produto
+
+  POST /user - criar usuário
+  GET /user/{id} - mostrar informações sobre usuário
+  PUT /user/{id} - atualizar informações sobre usuário
+  DELETE /user/{id} - soft delete no usuário
+
+  POST /order - criar pedido
+  PUT /order/{id} - mudar status do pedido
+  GET /order/{id} - visualizar pedido
+  GET /user/{id}/order/{orderId} - listar pedidos de usuário
+  POST /order/{id}/rating - avaliar pedido
+
+  POST /user/{id}/address - criar endereço
+  GET /user/{id}/address - visualizar endereços 
+  GET /user/{id}/address/{addressId} - visualizar endereço
+  PUT /user/{id}/address/{addressId} - atualizar endereço
+  DELETE /user/{id}/address/{addressId} - hard delete em pagamento
+
+  POST /user/{id}/payment - criar opção de pagamento
+  GET /user/{id}/payment - visualizar opções de pagamento
+  GET /user/{id}/payment/{payId} - visualizar opção de pagamento
+  DELETE /user/{id}/payment/{payId} - hard delete em pagamento
+
+  GET /user/{id}/wishlist - listar itens da wishlist
+
+
+  POST /auth - fazer login
+
+

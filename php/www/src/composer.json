@@ -3,6 +3,7 @@
         "fakerphp/faker": "^1.14",
         "slim/slim": "^4.8",
         "slim/psr7": "^1.4",
-        "slim/http": "^1.2"
+        "slim/http": "^1.2",
+        "vlucas/phpdotenv": "^5.3"
     }
 }
