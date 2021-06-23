@@ -2,11 +2,6 @@
   GET /product - listar todos os produtos. Aceitar query params para filtragem
   GET /product/{id} - informações sobre produto
 
-  POST /user - criar usuário
-  GET /user/{id} - mostrar informações sobre usuário
-  PUT /user/{id} - atualizar informações sobre usuário
-  DELETE /user/{id} - soft delete no usuário
-
   POST /order - criar pedido
   PUT /order/{id} - mudar status do pedido
   GET /order/{id} - visualizar pedido
@@ -30,3 +25,12 @@
   POST /auth - fazer login
 
 
+##########################################################
+
+DONE
+  POST /user - criar usuário
+  GET /user/{id} - mostrar informações sobre usuário
+  PUT /user/{id} - atualizar informações sobre usuário
+  DELETE /user/{id} - soft delete no usuário
+  PUT /user/{id} - atualizar informações sobre usuário
+  

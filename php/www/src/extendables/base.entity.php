@@ -2,7 +2,7 @@
 
   abstract class BaseIDEntity {
 
-    public function __construct(protected int $id) {
+    public function __construct(protected ?int $id = null) {
       if ($this->id == null)
         $this->id = 37687458746; // generate random id
     }
