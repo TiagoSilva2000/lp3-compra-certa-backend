@@ -1,8 +1,5 @@
 <?php
-
-use function PHPSTORM_META\sql_injection_subst;
-
-require (__DIR__ . '/../entities/user.entity.php');
+  require (__DIR__ . '/../entities/user.entity.php');
   require (__DIR__ . '/../../database/connection.php');  
   class UserRepository {
     public static function createUser(CreateUserDto $createUserDto): GetUserDto {
