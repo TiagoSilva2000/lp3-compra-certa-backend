@@ -13,7 +13,8 @@
               JOIN media as m
                 ON m.product_id = p.id AND m.main 
               JOIN price_history as ph 
-                ON p.active_price_id = ph.id");
+                ON p.active_price_id = ph.id
+        ");
             // WHERE p.deleted_at is NULL");
         $sql->execute();
         $products = [];
