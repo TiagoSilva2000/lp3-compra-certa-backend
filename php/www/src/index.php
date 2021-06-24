@@ -45,8 +45,8 @@
   $app->delete('/payment/{id}', \PaymentController::class, ':delete');
 
   $app->post('/order', \OrderController::class, ':create');
-  $app->get('/order/{id}', \OrderController::class, ':read');
   $app->get('/order', \OrderController::class, ':list');
+  $app->get('/order/{id}', \OrderController::class, ':read');
   $app->patch('/order/{id}', \OrderController::class, ':updateStatus');
   $app->patch('/order/{id}/received', \OrderController::class, ':setReceived');
   $app->get('/order-control', \OrderController::class, ':controlList');

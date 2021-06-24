@@ -1,29 +1,54 @@
 <?php
-  require_once (__DIR__ . '/../repositories/payment.repository.php');
+  require_once (__DIR__ . '/../repositories/payment-option.repository.php');
   require_once (__DIR__ . '/../repositories/credit-card.repository.php');
+  require_once (__DIR__ . '/../repositories/payment.repository.php');
 
   class PaymentService {
-      public static function create(int $userId, CreatePaymentDto $createPaymentDto): GetPaymentOptionDto {      
-      $paymentOption = PaymentRepository::create($userId, $createPaymentDto);
+    
+    public static function create(int $userId, CreatePaymentDto $createPaymentDto): GetPaymentOptionDto {      
+      $paymentOption = PaymentOptionRepository::create($userId, $createPaymentDto);
       $credit_card = CreditCardRepository::create($userId, $createPaymentDto);
 
       $paymentOption->payment = $credit_card;
       return $paymentOption;
     }
 
-    public static function list(int $userId): array {
-
-      return PaymentRepository::list($userId);
+    public static function createPayment(int $paymentOptionId, int $total) {
+      return PaymentRepository::create($paymentOptionId, $total);
     }
 
-    public static function read (int $paymentId): GetPaymentDto|null {
+    public static function findOrCreate(int $customer_id, CreateOrderPaymentDto $createOrderPaymentDto): GetPaymentOptionDto {
+      $payment = null;
+      if ($createOrderPaymentDto->id != null) {
+        $payment = PaymentService::read($createOrderPaymentDto->id);
+      } 
 
-      return PaymentRepository::read($paymentId);
+      if ($payment == null) {
+        $payment = PaymentService::create($customer_id, new CreatePaymentDto(
+          "",
+          PaymentMethod::intToStr(PaymentMethod::$CREDIT_CARD),
+          $createOrderPaymentDto->owner_name,
+          $createOrderPaymentDto->card_number,
+          $createOrderPaymentDto->due_date,
+          $createOrderPaymentDto->ccv,
+        ));
+      }
+      return $payment;
+    }
+
+    public static function list(int $userId): array {
+
+      return PaymentOptionRepository::list($userId);
+    }
+
+    public static function read (int $paymentId): GetPaymentOptionDto|null {
+
+      return PaymentOptionRepository::read($paymentId);
     }
     
     public static function makeDefault(int $paymentId): ResponseMessage {
       $message = new ResponseMessage("success", 200);
-      $rowsAffected = PaymentRepository::makeDefault($paymentId);
+      $rowsAffected = PaymentOptionRepository::makeDefault($paymentId);
 
       if ($rowsAffected != 1) {
         $message = new ResponseMessage("error", 500);
@@ -34,7 +59,7 @@
 
     public static function delete(int $paymentId): ResponseMessage {
       $message = new ResponseMessage("success", 200);
-      $rowsAffected = PaymentRepository::delete($paymentId);
+      $rowsAffected = PaymentOptionRepository::delete($paymentId);
 
       if ($rowsAffected != 1) {
         $message = new ResponseMessage("error", 500);

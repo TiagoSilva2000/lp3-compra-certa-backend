@@ -10,6 +10,8 @@
     ) {}
   }
 
+  
+
   class GetCreditCardDto {
     public function __construct(
       public string $owner_name,
@@ -38,6 +40,14 @@
       public string $owner_name,
       public string $last_digits,
       public string $due_date,
+    ) {}
+  }
+
+  class GetOrderPaymentDto {
+    public function __construct(
+      public int $id,
+      public int $total,
+      public string $status,
     ) {}
   }
 

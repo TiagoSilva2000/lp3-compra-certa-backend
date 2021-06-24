@@ -1,125 +1,34 @@
 <?php
+  require_once (__DIR__ . '/../enums/payment-status.enum.php');
   require_once (__DIR__ . '/../dtos/payment.dtos.php');
 
   class PaymentRepository {
-    public static function create(int $userId, CreatePaymentDto $createPaymentDto): GetPaymentOptionDto {    
+
+    public static function create(int $paymentOptionId, int $total): GetOrderPaymentDto {    
+      $status = PaymentStatus::intToStr(PaymentStatus::$PAID);
       try {
         $sql = Connection::$conn->prepare("
-          INSERT INTO payment_option
-            (customer_id, payment_method, name)
+          INSERT INTO payment
+            (total, status, payment_option_id)
           VALUES
-            (:customer_id, :payment_method, :name)
+            (:total, :status, :payment_option_id)
         ");
-        $sql->bindparam(":customer_id", $userId);
-        $sql->bindparam(":payment_method", $createPaymentDto->paymentMethod);
-        $sql->bindparam(":name", $createPaymentDto->name);
+        $sql->bindparam(":total", $total);
+        $sql->bindparam(":status", $status);
+        $sql->bindparam(":payment_option_id", $paymentOptionId);
         $sql->execute();
 
-        return new GetPaymentOptionDto (
+        return new GetOrderPaymentDto(
           Connection::$conn->lastInsertId(),
-          $createPaymentDto->name,
-          $createPaymentDto->paymentMethod,
-          false,
-          null
+          $total,
+          $status
         );
         } catch (\Exception $e) {
           echo "Error: " . $sql . "<br>" . Connection::$conn->error;
           throw new Exception($e);
         }
     }
-
-    public static function list(int $userId): array {
-      try {
-        $sql = Connection::$conn->prepare("
-          SELECT * FROM payment_option as po
-            JOIN credit_card as cc
-              ON cc.payment_options_id = po.id
-          WHERE po.customer_id = :id
-        ");
-        $sql->bindparam(":id", $userId);
-        $sql->execute();
-        $payments = [];
-
-        while ($row = $sql->fetch()) {
-          $payment = new GetPaymentDto(
-            $row['id'],
-            $row['name'],
-            $row['payment_method'],
-            $row['default'],
-            $row['owner_name'],
-            $row['last_digits'],
-            $row['due_date']
-          );
-
-          array_push($payments, $payment);
-        }
-
-        return $payments;
-        } catch (\Exception $e) {
-          echo "Error: " . $sql . "<br>" . Connection::$conn->error;
-          throw new Exception($e);
-        }
-    }
-
-    public static function read (int $paymentId): GetPaymentDto|null {
-      try {
-        $sql = Connection::$conn->prepare("
-          SELECT * FROM payment_option as po
-            JOIN credit_card as cc
-              ON cc.payment_options_id = po.id
-          WHERE po.id = :id
-        ");
-        $sql->bindparam(":id", $paymentId);
-        $sql->execute();
-        $payment = null;
-
-        while ($row = $sql->fetch()) {
-          $payment = new GetPaymentDto(
-            $row['id'],
-            $row['name'],
-            $row['payment_method'],
-            $row['default'],
-            $row['owner_name'],
-            $row['last_digits'],
-            $row['due_date']
-          );
-        }
-        return $payment;
-        } catch (\Exception $e) {
-          echo "Error: " . $sql . "<br>" . Connection::$conn->error;
-          throw new Exception($e);
-        }
-    }
-    
-    public static function makeDefault(int $paymentId): int {
-      try {
-        $sql = Connection::$conn->prepare("
-          UPDATE payment_option
-            SET default = true 
-          WHERE id = :id");
-        $sql->bindparam(":id", $paymentId);
-        $sql->execute();
-  
-        return $sql->rowCount();
-        } catch (\Exception $e) {
-          echo "Error: " . $sql . "<br>" . Connection::$conn->error;
-          throw new Exception($e);
-        }
-    }
-
-    public static function delete(int $paymentId): int {
-      try {
-        $sql = Connection::$conn->prepare("
-          DELETE FROM payment_option
-          WHERE id = :id");
-        $sql->bindparam(":id", $paymentId);
-        $sql->execute();
-  
-        return $sql->rowCount();
-        } catch (\Exception $e) {
-          echo "Error: " . $sql . "<br>" . Connection::$conn->error;
-          throw new Exception($e);
-        }
-    }
   }
+  
+
 ?>
