@@ -1,5 +1,7 @@
 <?php
   require_once (__DIR__ . "/../services/user.service.php");
+  require_once (__DIR__ . "/../enums/user-type.enum.php");
+  require_once (__DIR__ . "/../../auth/services/auth.service.php");
   // require_once (__DIR__ . "/../../../utils/ControllerHelper.php");
   use Psr\Http\Message\ResponseInterface as Response;
   use Psr\Http\Message\ServerRequestInterface as Request;
@@ -7,18 +9,17 @@
 
     public static function create(Request $request, Response $response): Response {
       $body = $request->getparsedBody();
-
       $createUserDto = new CreateUserDto(
         $body["email"],
-        $body["first_name"],
-        $body["last_name"],
+        $body["first_name"] ?? "",
+        $body["last_name"] ?? "",
         $body["password"],
-        $body["phone"],
-        $body["cpf"],
-        intval($body["user_type"])
+        $body["phone"] ?? "",
+        $body["cpf"] ?? "",
+        UserType::$CUSTOMER
       );
       
-      $user = UserService::create($createUserDto);
+      $user = AuthService::signup($createUserDto);
       return ControllerHelper::formatResponse($response, $user);
     }
 

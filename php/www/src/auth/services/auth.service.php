@@ -5,7 +5,7 @@
   require_once (__DIR__ . '/../../user/dtos/user.dtos.php');
   require_once (__DIR__ . '/../../user/services/user.service.php');
   class AuthService {
-
+    
     public static function authenticate(string $token): bool {
       $decoded = JWT::decode($token, $_ENV['JWT_SECRET'], array('HS256'));
 
@@ -23,12 +23,32 @@
       return AuthRepository::createToken($userId, $jwt);
     }
 
-    public static function login(string $token): GetUserDto|null {
-      $decoded = JWT::decode($token, $_ENV['JWT_SECRET'], array('HS256'));
-      
-      return AuthRepository::tokenExists($decoded->user_id, $token) ?
-        UserService::read($decoded->user_id) : null;
+    public static function signup(CreateUserDto $createUserDto): GetAuthResponse {
+      $user = UserService::create($createUserDto);
+      $token = AuthService::createToken($user->id, UserType::intToStr($user->user_type));
+
+      return new GetAuthResponse(
+        $user,
+        $token
+      );
     }
+
+    public static function login(string $email, string $password): GetAuthResponse|null {
+      $user = UserService::checkUserCredentials($email, $password);
+      $token = AuthService::createToken($user->id, UserType::intToStr($user->user_type));
+
+      return new GetAuthResponse(
+        $user,
+        $token
+      );
+    }
+
+    // public static function login(string $token): GetUserDto|null {
+    //   $decoded = JWT::decode($token, $_ENV['JWT_SECRET'], array('HS256'));
+      
+    //   return AuthRepository::tokenExists($decoded->user_id, $token) ?
+    //     UserService::read($decoded->user_id) : null;
+    // }
     
     public static function logout() {
 

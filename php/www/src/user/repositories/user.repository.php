@@ -3,7 +3,8 @@
   require_once (__DIR__ . '/../../database/connection.php');  
   class UserRepository {
     public static function createUser(CreateUserDto $createUserDto): GetUserDto {
-      $sql = Connection::$conn->prepare("INSERT INTO user (email, first_name, last_name, password, phone, cpf, user_type_id)
+      $role = UserType::intToStr($createUserDto->user_type);
+      $sql = Connection::$conn->prepare("INSERT INTO user (email, first_name, last_name, password, phone, cpf, user_type)
               VALUES (:email, :first_name, :last_name, :password, :phone, :cpf, :user_type)");
       $sql->bindParam(":email", $createUserDto->email);
       $sql->bindparam(":first_name", $createUserDto->first_name);
@@ -11,19 +12,20 @@
       $sql->bindparam(":password", $createUserDto->password);
       $sql->bindparam(":phone", $createUserDto->phone);
       $sql->bindparam(":cpf", $createUserDto->cpf);
-      $sql->bindparam(":user_type", $createUserDto->user_type);
+      $sql->bindparam(":user_type", $role);
       try {
         $sql->execute();
         
         return new GetUserDto(
-                        Connection::$conn->lastInsertId(),
-                        $createUserDto->email, 
-                        $createUserDto->first_name, 
-                        $createUserDto->last_name, 
-                        $createUserDto->password, 
-                        $createUserDto->phone, 
-                        $createUserDto->cpf,
-                        $createUserDto->user_type);
+          Connection::$conn->lastInsertId(),
+          $createUserDto->email, 
+          $createUserDto->first_name, 
+          $createUserDto->last_name, 
+          $createUserDto->password, 
+          $createUserDto->phone, 
+          $createUserDto->cpf,
+          $createUserDto->user_type
+        );
       } catch(Exception $e) {
         echo "Error: " . $sql . "<br>" . Connection::$conn->error;
         throw new Exception($e);
@@ -35,6 +37,36 @@
         $sql = Connection::$conn->prepare("SELECT * FROM user WHERE id = :id AND deleted_at is NULL");
         $user = null;
         $sql->bindparam(":id", $id);
+        
+        $sql->execute();
+        while ($row = $sql->fetch()) {
+          $user = new GetUserDto(
+            $row['id'],
+            $row['email'],
+            $row['first_name'],
+            $row['last_name'],
+            $row['password'],
+            $row['phone'],
+            $row['cpf'],
+            $row['user_type_id'],
+          );
+        }
+  
+        return $user;
+        } catch (\Exception $e) {
+          echo "Error: " . $sql . "<br>" . Connection::$conn->error;
+          throw new Exception($e);
+        }
+    }
+
+    public static function readByEmail(string $email): GetUserDto|null {
+      try {
+        $sql = Connection::$conn->prepare("
+          SELECT * FROM user 
+          WHERE email = :email AND deleted_at is NULL
+        ");
+        $user = null;
+        $sql->bindparam(":email", $email);
         
         $sql->execute();
         while ($row = $sql->fetch()) {
@@ -86,7 +118,8 @@
         $user = null;
         $sql->bindparam(":id", $id);
         $now = new DateTime();
-        $sql->bindParam(":deleted_at", $now->format('Y-m-d H:i:s'), PDO::PARAM_STR);
+        $nowToDb =  $now->format('Y-m-d H:i:s');
+        $sql->bindParam(":deleted_at", $nowToDb, PDO::PARAM_STR);
   
         $sql->execute();
   

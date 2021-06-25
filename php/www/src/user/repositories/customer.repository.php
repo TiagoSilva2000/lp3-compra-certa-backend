@@ -1,21 +1,28 @@
-<?
-  require_once('../entities/customer.entity.php');
+<?php
+  require_once(__DIR__ . '/../dtos/customer.dtos.php');
   class CustomerRepository {
 
-    public static function createCustomer(): Customer {
-      return new Customer("adaddasdad", 45.84, 80);
+    public static function createCustomer(int $user_id): GetCustomerDto  {
+      try {
+        $sql = Connection::$conn->prepare("
+          INSERT INTO customer 
+            (:user_id)
+          VALUES 
+            (:user_id)"
+        );
+        $sql->bindParam(":user_id", $user_id);    
+        $sql->execute();
+      
+        return new GetCustomerDto (
+          $user_id, 
+          0,
+          0
+        );
+      } catch(Exception $e) {
+        echo "Error: " . $sql . "<br>" . Connection::$conn->error;
+        throw new Exception($e);
+      }      
     }
-
-    public static function getCustomer(): Customer {
-      return new Customer("adaddasdad", 45.84, 80);
-    }
-
-    public static function updateCustomer(): Customer {
-      return new Customer("adaddasdad", 45.84, 80);
-    }
-
-    public static function deleteCustomer(): void {}
-
   }
 
 ?>

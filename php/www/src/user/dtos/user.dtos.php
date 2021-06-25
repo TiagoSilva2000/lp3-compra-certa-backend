@@ -1,4 +1,5 @@
 <?php
+  require_once (__DIR__ . '/customer.dtos.php');
 
   class CreateUserDto {
     
@@ -23,7 +24,8 @@
       public string $password,
       public string $phone,
       public string $cpf,
-      public int $user_type
+      public int $user_type,
+      public ?GetCustomerDto $customer = null
     ) {}
   }
   class UpdateUserDto {

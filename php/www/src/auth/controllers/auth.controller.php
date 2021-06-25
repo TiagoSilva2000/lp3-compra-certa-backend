@@ -8,18 +8,33 @@
 class AuthController {
 
     public static function login(Request $request, Response $response, array $args) {
+      $body = $request->getparsedBody();
       $token =  $request->getHeader('Authorization')[0];
-
+      
       if ($token == null) {
         throw new HttpUnauthorizedException($request);
       }
-      $user = AuthService::login(substr($token, 7));
+      // $user = AuthService::login(substr($token, 7));
+      $user = AuthService::login($body['email'], $body['password']);
       if ($user == null) {
         throw new HttpUnauthorizedException($request);
       }
 
       return ControllerHelper::formatResponse($response, $user);
     }
+    // public static function login(Request $request, Response $response, array $args) {
+    //   $token =  $request->getHeader('Authorization')[0];
+
+    //   if ($token == null) {
+    //     throw new HttpUnauthorizedException($request);
+    //   }
+    //   $user = AuthService::login(substr($token, 7));
+    //   if ($user == null) {
+    //     throw new HttpUnauthorizedException($request);
+    //   }
+
+    //   return ControllerHelper::formatResponse($response, $user);
+    // }
     
     public static function logout(Request $request, Response $response, array $args) {
 
