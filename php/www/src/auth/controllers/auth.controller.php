@@ -7,14 +7,12 @@
 
 class AuthController {
 
-    public static function login(Request $request, Response $response, array $args) {
+  /**
+   * @throws HttpUnauthorizedException
+   */
+  public static function login(Request $request, Response $response, array $args) {
       $body = $request->getparsedBody();
-      $token =  $request->getHeader('Authorization')[0];
-      
-      if ($token == null) {
-        throw new HttpUnauthorizedException($request);
-      }
-      // $user = AuthService::login(substr($token, 7));
+
       $user = AuthService::login($body['email'], $body['password']);
       if ($user == null) {
         throw new HttpUnauthorizedException($request);

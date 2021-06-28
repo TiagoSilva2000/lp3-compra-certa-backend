@@ -23,7 +23,7 @@
           null
         );
         } catch (\Exception $e) {
-          echo "Error: " . $sql . "<br>" . Connection::$conn->error;
+          echo "Error: " . $sql->errorInfo() . "<br>" . Connection::$conn->error;
           throw new Exception($e);
         }
     }
@@ -57,7 +57,7 @@
 
         return $payments;
         } catch (\Exception $e) {
-          echo "Error: " . $sql . "<br>" . Connection::$conn->error;
+          echo "Error: " . $sql->errorInfo() . "<br>" . Connection::$conn->error;
           throw new Exception($e);
         }
     }
@@ -98,23 +98,28 @@
         }
         return $payment;
         } catch (\Exception $e) {
-          echo "Error: " . $sql . "<br>" . Connection::$conn->error;
+          echo "Error: " . $sql->errorInfo() . "<br>" . Connection::$conn->error;
           throw new Exception($e);
         }
     }
     
-    public static function makeDefault(int $paymentId): int {
+    public static function makeDefault(int $paymentId, int $user_id): int {
       try {
         $sql = Connection::$conn->prepare("
           UPDATE payment_option
-            SET default = true 
-          WHERE id = :id");
+            SET payment_option.default = 0
+          WHERE customer_id = :customer_id AND payment_option.default = 1;
+          UPDATE payment_option
+            SET payment_option.default = 1 
+          WHERE id = :id
+         ");
         $sql->bindparam(":id", $paymentId);
+        $sql->bindparam(":customer_id", $user_id);
         $sql->execute();
   
         return $sql->rowCount();
         } catch (\Exception $e) {
-          echo "Error: " . $sql . "<br>" . Connection::$conn->error;
+          echo "Error: " . $sql->errorInfo() . "<br>" . Connection::$conn->error;
           throw new Exception($e);
         }
     }
@@ -122,14 +127,18 @@
     public static function delete(int $paymentId): int {
       try {
         $sql = Connection::$conn->prepare("
+          DELETE FROM credit_card
+          WHERE payment_options_id = :payment_options_id;
           DELETE FROM payment_option
-          WHERE id = :id");
+          WHERE id = :id
+         ");
+        $sql->bindparam(":payment_options_id", $paymentId);
         $sql->bindparam(":id", $paymentId);
         $sql->execute();
   
         return $sql->rowCount();
         } catch (\Exception $e) {
-          echo "Error: " . $sql . "<br>" . Connection::$conn->error;
+          echo "Error: " . $sql->errorInfo() . "<br>" . Connection::$conn->error;
           throw new Exception($e);
         }
     }

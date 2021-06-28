@@ -24,7 +24,7 @@
       public string $password,
       public string $phone,
       public string $cpf,
-      public int $user_type,
+      public string $user_type,
       public ?GetCustomerDto $customer = null
     ) {}
   }

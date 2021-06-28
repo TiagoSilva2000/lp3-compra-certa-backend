@@ -7,13 +7,15 @@
       try {
         $sql = Connection::$conn->prepare("
           INSERT INTO credit_card
-            (payment_option_id, owner_name, last_digits, due_date)
+            (payment_options_id, owner_name, last_digits, due_date)
           VALUES
-            (:payment_option_id, :owner_name, :last_digits, :due_date)
+            (:payment_options_id, :owner_name, :last_digits, :due_date)
         ");
-        $sql->bindparam(":payment_option_id", $paymentId);
+
+        $fixedLastdigits = substr($createPaymentDto->card_number, -4);
+        $sql->bindparam(":payment_options_id", $paymentId);
         $sql->bindparam(":owner_name", $createPaymentDto->owner_name);
-        $sql->bindparam(":last_digits", $createPaymentDto->card_number);
+        $sql->bindparam(":last_digits", $fixedLastdigits);
         $sql->bindparam(":due_date", $createPaymentDto->due_date);
         $sql->execute();
 
@@ -23,7 +25,7 @@
           $createPaymentDto->due_date
         );
         } catch (\Exception $e) {
-          echo "Error: " . $sql . "<br>" . Connection::$conn->error;
+          echo "Error: " . $sql->errorInfo() . "<br>" . Connection::$conn->error;
           throw new Exception($e);
         }
     }

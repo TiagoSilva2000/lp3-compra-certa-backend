@@ -9,7 +9,7 @@
       try {
         $sql = Connection::$conn->prepare("
           INSERT INTO payment
-            (total, status, payment_option_id)
+            (total, payment_status, payment_options_id)
           VALUES
             (:total, :status, :payment_option_id)
         ");
@@ -24,7 +24,7 @@
           $status
         );
         } catch (\Exception $e) {
-          echo "Error: " . $sql . "<br>" . Connection::$conn->error;
+          echo "Error: " . $sql->errorInfo() . "<br>" . Connection::$conn->error;
           throw new Exception($e);
         }
     }

@@ -5,34 +5,34 @@
   class CreateOrderPersonalDto {
     public function __construct(
       public ?int $id = null,
-      public string $name,
-      public string $cpf,
-      public string $email,
+      public ?string $name,
+      public ?string $cpf,
+      public ?string $email,
     ) {}
   }
   class CreateOrderAddressDto {
     public function __construct(
       public ?int $id = null,
-			public string $cep,
-			public string $street,
-			public string $neighbour,
-			public string $city,
-			public string $state,
-			public string $country,
-			public string $house_id,
-			public string $details,
-			public string $owner_phone,
+			public ?string $cep,
+			public ?string $street,
+			public ?string $neighbour,
+			public ?string $city,
+			public ?string $state,
+			public ?string $country,
+			public ?string $house_id,
+			public ?string $details,
+			public ?string $owner_phone,
     ) {}
   }
 
   class CreateOrderPaymentDto {
     public function __construct(
       public ?int $id = null,
-      public string $name,
-      public string $owner_name,
-      public string $card_number,
-      public string $due_date,
-      public string $ccv
+      public ?string $name,
+      public ?string $owner_name,
+      public ?string $card_number,
+      public ?string $due_date,
+      public ?string $ccv
     ) {}
   }
 

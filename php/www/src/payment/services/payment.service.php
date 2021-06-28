@@ -7,7 +7,7 @@
     
     public static function create(int $userId, CreatePaymentDto $createPaymentDto): GetPaymentOptionDto {      
       $paymentOption = PaymentOptionRepository::create($userId, $createPaymentDto);
-      $credit_card = CreditCardRepository::create($userId, $createPaymentDto);
+      $credit_card = CreditCardRepository::create($paymentOption->id, $createPaymentDto);
 
       $paymentOption->payment = $credit_card;
       return $paymentOption;
@@ -25,10 +25,10 @@
 
       if ($payment == null) {
         $payment = PaymentService::create($customer_id, new CreatePaymentDto(
-          "",
+          $createOrderPaymentDto->name,
           PaymentMethod::intToStr(PaymentMethod::$CREDIT_CARD),
           $createOrderPaymentDto->owner_name,
-          $createOrderPaymentDto->card_number,
+          substr($createOrderPaymentDto->card_number, -4),
           $createOrderPaymentDto->due_date,
           $createOrderPaymentDto->ccv,
         ));
@@ -46,13 +46,14 @@
       return PaymentOptionRepository::read($paymentId);
     }
     
-    public static function makeDefault(int $paymentId): ResponseMessage {
+    public static function makeDefault(int $paymentId, int $user_id): ResponseMessage {
       $message = new ResponseMessage("success", 200);
-      $rowsAffected = PaymentOptionRepository::makeDefault($paymentId);
+      $rowsAffected = PaymentOptionRepository::makeDefault($paymentId, $user_id);
 
-      if ($rowsAffected != 1) {
+      /*
+      if ($rowsAffected == 0) {
         $message = new ResponseMessage("error", 500);
-      }
+      }*/
 
       return $message;
     }

@@ -4,6 +4,7 @@
 
     public static function list(int $userId): array {
       try {
+        /*
         $sql = Connection::$conn->prepare("
           SELECT * 
             FROM wishlist as w
@@ -14,12 +15,47 @@
               JOIN price_history as ph 
                 ON p.active_price_id = ph.id
             WHERE w.customer_id = :id");
-            // WHERE p.deleted_at is NULL");
-        $sql->bindParam(":id", $userId);
+        */
+        $sql = Connection::$conn->prepare("
+          SELECT p.id, p.name, p.rating, p.product_type_id, p.description,
+             p.stock, p.provider_id, p.sold_qnt,
+             ph.value, ph.divided_max, ph.payment_discount, ph.active,
+             m.path, m.ext, m.main
+          FROM product as p
+          JOIN wishlist as w
+            ON w.product_id = p.id AND w.customer_id = :customer_id
+          JOIN price_history as ph
+            ON ph.product_id = p.id AND ph.active = 1
+          LEFT OUTER JOIN media as m
+            ON m.product_id = p.id AND m.main = 1
+        ");
+        $sql->bindParam(":customer_id", $userId);
         $sql->execute();
         $products = [];
 
         while ($row = $sql->fetch()) {
+          $product = new GetProductDto(
+            $row['id'],
+            $row['name'],
+            $row['rating'],
+            EProductType::intToStr($row['product_type_id']),
+            $row['description'],
+            $row['stock'],
+            $row['provider_id'],
+            $row['sold_qnt'],
+            new GetPriceDto(
+              $row["value"],
+              $row["divided_max"],
+              $row["payment_discount"],
+              $row["active"]
+            ),
+            new GetMediaDto(
+              $row["path"],
+              $row["ext"],
+              $row["main"]
+            )
+          );
+          /*
           $product = new GetProductToHomeDto(
             $row['id'],
             $row['name'],
@@ -34,7 +70,7 @@
               $row['divided_max'],
               $row['payment_discount']
             )
-          );
+          );*/
           array_push($products, $product);
         }
 
