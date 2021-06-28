@@ -15,6 +15,7 @@ require_once (__DIR__ . '/../repositories/customer.repository.php');
       switch($user->user_type) {
         case UserType::$CUSTOMER:
           $user->customer = CustomerRepository::createCustomer($user->id);
+          break;
         case UserType::$ADMIN:
         case UserType::$EMPLOYEE:
         default:
@@ -24,13 +25,18 @@ require_once (__DIR__ . '/../repositories/customer.repository.php');
       return $user;
     }
 
+    /**
+     * @throws Exception
+     */
     public static function checkUserCredentials(string $email, string $password): GetUserDto {
 
       $user = UserRepository::readByEmail($email);
       if ($user == null) {
-        // throw new HttpNotFoundException($request, "user not found");
+        throw new Exception("incorrect email");
+        //throw new HttpNotFoundException($request, "user not found");
       } 
       if ($user->password != $password) {
+        throw new Exception("invalid password");
         // throw new HttpBadRequestException($request, "authentication failed");
       }
 

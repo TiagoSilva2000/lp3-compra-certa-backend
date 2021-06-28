@@ -12,6 +12,8 @@
         $address = AddressRepository::read($createOrderAddressDto->id);
       }
 
+
+
       if ($address == null) {
         $address = AddressService::create($customer_id, new CreateAddressDto(
           $createOrderAddressDto->cep,
@@ -37,12 +39,23 @@
       return AddressRepository::list($user_id);
     }
 
-    public static function update(int $address_id, CreateAddressDto $updateAddressDto): GetUpdatedAddressDto {
-      return AddressRepository::update($address_id, $updateAddressDto);
+    public static function update(int $address_id, CreateAddressDto $updateAddressDto): ResponseMessage {
+      $rowsAffected = AddressRepository::update($address_id, $updateAddressDto);
+      if ($rowsAffected != 1) {
+        return new ResponseMessage(
+          "success",
+          200
+        );
+      }
+
+      return new ResponseMessage(
+        "error",
+        500
+      );
     }
 
-    public static function makeDefault(int $address_id): ResponseMessage {
-      return AddressRepository::makeDefault($address_id);
+    public static function makeDefault(int $user_id, int $address_id): ResponseMessage {
+      return AddressRepository::makeDefault($user_id, $address_id);
     }
 
     public static function delete(int $address_id): ResponseMessage {

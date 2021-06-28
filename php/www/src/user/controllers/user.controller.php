@@ -5,6 +5,7 @@
   // require_once (__DIR__ . "/../../../utils/ControllerHelper.php");
   use Psr\Http\Message\ResponseInterface as Response;
   use Psr\Http\Message\ServerRequestInterface as Request;
+
   class UserController {
 
     public static function create(Request $request, Response $response): Response {
@@ -25,7 +26,8 @@
 
     public static function read(Request $request, Response $response, array $args): Response {
 
-      $user = UserService::read(intval($args["id"]));
+      $payload = AuthService::getPayloadFromRequest($request);
+      $user = UserService::read($payload->user_id);
       return ControllerHelper::formatResponse($response, $user);
     }
 
@@ -39,8 +41,10 @@
         $body["phone"],
         $body["cpf"],
       );
+      $payload = AuthService::getPayloadFromRequest($request);
 
-      $user = UserService::update(intval($args["id"]), $updateUserDto);
+
+      $user = UserService::update($payload->user_id, $updateUserDto);
       return ControllerHelper::formatResponse($response, $user);
     }
     

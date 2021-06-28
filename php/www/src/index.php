@@ -27,7 +27,6 @@ $app->add(CorsMiddleware::class);
 $app->addRoutingMiddleware();
 $app->addErrorMiddleware(true, true, true, $log);
 
-
 //   $app->options('/{routes:.+}', function ($request, $response, $args) {
 //     return $response;
 //   });
@@ -40,49 +39,70 @@ $app->addErrorMiddleware(true, true, true, $log);
 //             ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 // });
 
-
 $app->post('/users', \UserController::class . ':create');
-$app->get('/users/{id}', \UserController::class . ':read');
-$app->put('/users/{id}', \UserController::class . ':update');
-$app->delete('/users/{id}', \UserController::class . ':delete');
-$app->patch('/users/{id}', \UserController::class . ':recover');
+$app->get('/users', \UserController::class . ':read');
+$app->put('/users', \UserController::class . ':update');
+$app->delete('/users', \UserController::class . ':delete');
+$app->patch('/users', \UserController::class . ':recover');
 
 $app->options('/users', PreflightAction::class);
 $app->options('/users/{id}', PreflightAction::class);
 
 $app->get('/products/home', \ProductController::class . ':home');
+$app->post('/products', \ProductController::class . ':create');
+$app->post('/products/{id}/medias', \ProductController::class . ':addMediasToProduct');
+$app->patch('/products/{product_id}/medias/{id}', \ProductController::class . ':makeDefaultMedia');
 $app->get('/products', \ProductController::class . ':list');
+$app->get('/products/shopcart', \ProductController::class . ':listToShopcart');
 $app->get('/products/{id}', \ProductController::class . ':read');
+$app->patch('/products/{id}', \ProductController::class . ':rate');
+
+
+$app->options('/products', PreflightAction::class);
+$app->options('/products/{id}', PreflightAction::class);
+$app->options('/products/{id}/medias', PreflightAction::class);
+//$app->options('/products/home', PreflightAction::class);
 
 $app->get('/wishlist', \ProductController::class . ':listWishlist');
-$app->post('/product/{id}/wishlist', \ProductController::class . ':addToWishlist');
-$app->delete('/product/{id}/wishlist', \ProductController::class . ':removeFromWishlist');
+$app->post('/wishlist/{id}', \ProductController::class . ':addToWishlist');
+$app->delete('/wishlist/{id}', \ProductController::class . ':removeFromWishlist');
+$app->options('/wishlist', PreflightAction::class);
+$app->options('/wishlist/{id}', PreflightAction::class);
 
-$app->post('/address', \PaymentController::class, ':create');
-$app->get('/address/{id}', \PaymentController::class, ':read');
-$app->get('/address', \PaymentController::class, ':list');
-$app->put('/address/{id}', \PaymentController::class, ':update');
-$app->patch('/address/{id}', \PaymentController::class, ':makeDefault');
-$app->delete('/address/{id}', \PaymentController::class, ':delete');
+$app->post('/addresses', \AddressController::class . ':create');
+$app->get('/addresses/{id}', \AddressController::class . ':read');
+$app->get('/addresses', \AddressController::class . ':list');
+$app->put('/addresses/{id}', \AddressController::class . ':update');
+$app->patch('/addresses/{id}', \AddressController::class . ':makeDefault');
+$app->delete('/addresses/{id}', \AddressController::class . ':delete');
 
-$app->post('/payment', \PaymentController::class, ':create');
-$app->get('/payment/{id}', \PaymentController::class, ':read');
-$app->get('/payment', \PaymentController::class, ':list');
-$app->patch('/payment/{id}', \PaymentController::class, ':makeDefault');
-$app->delete('/payment/{id}', \PaymentController::class, ':delete');
+$app->options('/addresses', PreflightAction::class);
+$app->options('/addresses/{id}', PreflightAction::class);
 
-$app->post('/order', \OrderController::class, ':create');
-$app->get('/order', \OrderController::class, ':list');
-$app->get('/order/{id}', \OrderController::class, ':read');
-$app->patch('/order/{id}', \OrderController::class, ':updateStatus');
-$app->patch('/order/{id}/received', \OrderController::class, ':setReceived');
-$app->get('/order-control', \OrderController::class, ':controlList');
-$app->post('/order/{id}/rating', \OrderController::class, ':rate');
+$app->post('/payments', \PaymentController::class . ':create');
+$app->get('/payments/{id}', \PaymentController::class . ':read');
+$app->get('/payments', \PaymentController::class . ':list');
+$app->patch('/payments/{id}', \PaymentController::class . ':makeDefault');
+$app->delete('/payments/{id}', \PaymentController::class . ':delete');
 
-$app->post('/auth', \AuthController::class, ':login');
-$app->delete('/auth/{token}', \AuthController::class, ':logout');
+$app->options("/payments", PreflightAction::class);
+$app->options("/payments/{id}", PreflightAction::class);
 
-$app->get('/admin/dash', \DashController::class, ':dash');
+$app->post('/orders', \OrderController::class . ':create');
+$app->get('/orders', \OrderController::class . ':list');
+$app->get('/orders/{id}', \OrderController::class . ':read');
+$app->patch('/orders/{id}', \OrderController::class . ':updateStatus');
+$app->patch('/orders/{id}/received', \OrderController::class . ':setReceived');
+$app->get('/order-controls', \OrderController::class . ':controlList');
+$app->post('/orders/{id}/rating', \OrderController::class . ':rate');
+
+$app->post('/auths', \AuthController::class . ':login');
+$app->delete('/auths/{token}', \AuthController::class . ':logout');
+$app->options('/auths', PreflightAction::class);
+$app->options('/auths/{token}', PreflightAction::class);
+
+
+$app->get('/admin/dash', \DashController::class . ':dash');
 
 $app->get('/test', function (Request $request, Response $response) {
   $var = "x";

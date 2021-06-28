@@ -5,6 +5,19 @@
   class OrderService {
     public static function create(int $customer_id, CreateOrderDto $createOrderDto): GetOrderDto {
       $paymentOption = PaymentService::findOrCreate($customer_id, $createOrderDto->payment);
+      /*
+      $address = AddressService::findOrCreate($customer_id, new CreateAddressDto(
+        $createOrderDto->address->cep,
+        $createOrderDto->address->street,
+        $createOrderDto->address->neighbour,
+        $createOrderDto->address->city,
+        $createOrderDto->address->state,
+        $createOrderDto->address->country,
+        $createOrderDto->address->house_id,
+        $createOrderDto->address->details,
+        $createOrderDto->address->owner_phone,
+      ));*/
+
       $address = AddressService::findOrCreate($customer_id, $createOrderDto->address);
       $payment = PaymentService::createPayment($paymentOption->id, $createOrderDto->total);
       $order = OrderRepository::create($customer_id, $payment, $address);

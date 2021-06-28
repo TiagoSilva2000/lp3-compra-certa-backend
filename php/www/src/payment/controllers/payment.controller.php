@@ -8,23 +8,25 @@
     
     public static function create(Request $request, Response $response, array $args): Response {
       $body = $request->getparsedBody();
+      $payload = AuthService::getPayloadFromRequest($request);
 
       $createPaymentDto = new CreatePaymentDto(
         $body["name"],
         Paymentmethod::intToStr(PaymentMethod::$CREDIT_CARD),
         $body["owner_name"],
-        $body["card_number"],
+        substr($body["card_number"], -4),
         $body["due_date"],
         $body["ccv"]
       );
       
-      $payment = PaymentService::create(intval($args['user_id']), $createPaymentDto);
+      $payment = PaymentService::create($payload->user_id, $createPaymentDto);
       return ControllerHelper::formatResponse($response, $payment);
     }
 
     public static function list(Request $request, Response $response, array $args): Response {
-      
-      $payments = PaymentService::list(intval($args['user_id']));
+      $payload = AuthService::getPayloadFromRequest($request);
+
+      $payments = PaymentService::list($payload->user_id);
       return ControllerHelper::formatResponse($response, $payments);
     }
 
@@ -35,7 +37,9 @@
     }
     
     public static function makeDefault(Request $request, Response $response, array $args): Response {
-      $message = PaymentService::makeDefault(intval($args['id']));
+      $payload = AuthService::getPayloadFromRequest($request);
+
+      $message = PaymentService::makeDefault(intval($args['id']), $payload->user_id);
       return ControllerHelper::formatResponse($response, $message);
     }
 

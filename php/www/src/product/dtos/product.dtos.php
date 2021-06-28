@@ -1,5 +1,54 @@
 <?php
 
+  class CreateProductPriceDto {
+    public function __construct(
+      public int $value,
+      public int $divided_max,
+      public int $payment_discount
+    ) {}
+  }
+
+  class CreateProductMediaDto {
+    public function __construct (
+      public string $path,
+      public string $ext,
+      public ?bool $main = false,
+    ) {}
+  }
+
+
+  class CreateProductDto {
+
+    public function __construct (
+      public string $name,
+      public string $description,
+      public int $stock,
+      public int $provider_id,
+      public int $product_type_id,
+      public CreateProductPriceDto $price,
+      //public array $medias
+    )
+    {}
+  }
+
+  class GetMediaDto {
+    public function __construct(
+      public ?string $path = null,
+      public ?string $ext = null,
+      public ?bool $main = null,
+    ) {}
+  }
+
+  class GetPriceDto {
+    public function __construct (
+      public int $value,
+      public int $divided_max,
+      public int $payment_discount,
+      public bool $active
+    ) {}
+  }
+
+
   class GetProductDto {
 
     public function __construct (
@@ -9,13 +58,10 @@
       public string $type,
       public string $description,
       public int $stock,
-      public array $categories,
-      public int $providerId,
-      public array $medias = [],
-      public int $soldQnt = 0,
-      // public array $priceHistory,
-      // public PriceHistory $activePrice,
-      // public Media $mainMedia
+      public int $provider_id,
+      public int $sold_qnt = 0,
+      public GetPriceDto $active_price,
+      public GetMediaDto $main_media
     ) {}
   }
 
@@ -28,24 +74,6 @@
       public GetMediaDto $media,
       public GetPriceDto $price,
     ) {}
-
   }
-
-  class GetMediaDto {
-
-    public function __construct (
-      public string $path,
-      public bool $default
-    ) {}
-  }
-  class GetPriceDto {
-
-    public function __construct (
-      public int $active_price,
-      public int $divided_max,
-      public int $payment_discount,
-    ) {}
-  }
-
 
 ?>

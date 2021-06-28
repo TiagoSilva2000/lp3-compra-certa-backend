@@ -11,6 +11,7 @@
 			public string $house_id,
 			public string $details,
 			public string $owner_phone,
+      public string $owner_name = ""
     ) {}
   }
 
@@ -28,6 +29,8 @@
 			public string $house_id,
 			public string $details,
 			public string $owner_phone,
+      public ?string $owner_name = "",
+      public bool $default
     ) {}
   }
 

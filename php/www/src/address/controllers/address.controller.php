@@ -8,6 +8,7 @@
 
     public static function create(Request $request, Response $response, array $args): Response {
       $body = $request->getparsedBody();
+      $payload = AuthService::getPayloadFromRequest($request);
 
       $createAddressDto = new CreateAddressDto(
         $body["cep"],
@@ -18,9 +19,10 @@
         $body["country"],
         $body["house_id"],
         $body["details"],
-        $body["owner_phone"]
+        $body["owner_phone"],
+        $body['owner_name']
       );
-      $address = AddressService::create(intval($args['user_id']), $createAddressDto);
+      $address = AddressService::create($payload->user_id, $createAddressDto);
       return ControllerHelper::formatResponse($response, $address);
     }
 
@@ -31,8 +33,9 @@
     }
 
     public static function list(Request $request, Response $response, array $args): Response {
-      
-      $addresses = AddressService::list(intval($args["user_id"]));
+      $payload = AuthService::getPayloadFromRequest($request);
+
+      $addresses = AddressService::list($payload->user_id);
       return ControllerHelper::formatResponse($response, $addresses);
     }
 
@@ -48,16 +51,17 @@
         $body["country"],
         $body["house_id"],
         $body["details"],
-        $body["owner_phone"]
+        $body["owner_phone"],
+        $body["owner_name"]
       );
-
-      $address = AddressService::update(intval($args["user_id"]), $updateAddressDto);
+      $address = AddressService::update(intval($args["id"]), $updateAddressDto);
       return ControllerHelper::formatResponse($response, $address);
     }
 
     public static function makeDefault(Request $request, Response $response, array $args): Response {
-      
-      $message = AddressService::makeDefault(intval($args["id"]));
+      $payload = AuthService::getPayloadFromRequest($request);
+
+      $message = AddressService::makeDefault($payload->user_id, intval($args["id"]));
       return ControllerHelper::formatResponse($response, $message);
     }
 

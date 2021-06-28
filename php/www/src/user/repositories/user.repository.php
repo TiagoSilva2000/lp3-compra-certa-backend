@@ -15,7 +15,7 @@
       $sql->bindparam(":user_type", $role);
       try {
         $sql->execute();
-        
+
         return new GetUserDto(
           Connection::$conn->lastInsertId(),
           $createUserDto->email, 
@@ -37,7 +37,7 @@
         $sql = Connection::$conn->prepare("SELECT * FROM user WHERE id = :id AND deleted_at is NULL");
         $user = null;
         $sql->bindparam(":id", $id);
-        
+
         $sql->execute();
         while ($row = $sql->fetch()) {
           $user = new GetUserDto(
@@ -48,10 +48,10 @@
             $row['password'],
             $row['phone'],
             $row['cpf'],
-            $row['user_type_id'],
+            $row['user_type'],
           );
         }
-  
+
         return $user;
         } catch (\Exception $e) {
           echo "Error: " . $sql . "<br>" . Connection::$conn->error;
@@ -78,7 +78,7 @@
             $row['password'],
             $row['phone'],
             $row['cpf'],
-            $row['user_type_id'],
+            $row['user_type'],
           );
         }
   
@@ -89,24 +89,30 @@
         }
     }
 
-    public static function update(int $id, UpdateuserDto $updateuserDto): GetUserDto|null {
+    public static function update(int $id, UpdateUserDto $updateUserDto): GetUserDto|null {
       try {
 
-        $sql = Connection::$conn->prepare("UPDATE user SET email = :email, first_name = :first_name, last_name = :last_name, phone = :phone, cpf = :cpf WHERE id = :id AND deleted_at is NULL");
-        $user = null;
+        $sql = Connection::$conn->prepare("
+            UPDATE user
+                SET email = :email, 
+                    first_name = :first_name, 
+                    last_name = :last_name, 
+                    phone = :phone, 
+                    cpf = :cpf 
+            WHERE id = :id AND deleted_at is NULL
+        ");
         $sql->bindparam(":id", $id);
-
-        $sql->bindParam(":email", $updateuserDto->email);
-        $sql->bindparam(":first_name", $updateuserDto->first_name);
-        $sql->bindparam(":last_name", $updateuserDto->last_name);
-        $sql->bindparam(":phone", $updateuserDto->phone);
-        $sql->bindparam(":cpf", $updateuserDto->cpf);
+        $sql->bindParam(":email", $updateUserDto->email);
+        $sql->bindparam(":first_name", $updateUserDto->first_name);
+        $sql->bindparam(":last_name", $updateUserDto->last_name);
+        $sql->bindparam(":phone", $updateUserDto->phone);
+        $sql->bindparam(":cpf", $updateUserDto->cpf);
   
         $sql->execute();
   
-        return $user;
+        return null;
         } catch (\Exception $e) {
-          echo "Error: " . $sql . "<br>" . Connection::$conn->error;
+          echo "Error: " . $sql->errorInfo() . "<br>" . Connection::$conn->error;
           throw new Exception($e);
         }
     }

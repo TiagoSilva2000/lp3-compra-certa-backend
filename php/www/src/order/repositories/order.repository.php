@@ -4,17 +4,18 @@
     public static function create(int $customer_id, GetOrderPaymentDto $payment, GetAddressDto $address): GetOrderDto {
       $order = null;
       $now = new DateTime();
+      $formattedNow = $now->format('Y-m-d H:i:s');
       try {
         $sql = Connection::$conn->prepare("
-          INSERT INTO order
-            (customer_id, payment_id, address_id, ordered_at)
+          INSERT INTO compracertadb.order
+            (customer_id, payment_id, address_id, ordered_at) 
           VALUES
             (:customer_id, :payment_id, :address_id, :ordered_at)
         ");
         $sql->bindparam(":customer_id", $customer_id);
         $sql->bindparam(":payment_id", $payment->id);
         $sql->bindparam(":address_id", $address->id);
-        $sql->bindParam(":ordered_at", $now->format('Y-m-d H:i:s'), PDO::PARAM_STR);
+        $sql->bindParam(":ordered_at", $formattedNow, PDO::PARAM_STR);
         $sql->execute();
   
         return new GetOrderDto(
@@ -26,7 +27,7 @@
           []
         );
         } catch (\Exception $e) {
-          echo "Error: " . $sql . "<br>" . Connection::$conn->error;
+          echo "Error: " . $sql->errorInfo() . "<br>" . Connection::$conn->error;
           throw new Exception($e);
         }
     }
@@ -39,7 +40,7 @@
   
         return $orders;
         } catch (\Exception $e) {
-          echo "Error: " . $sql . "<br>" . Connection::$conn->error;
+          echo "Error: " . $sql->errorInfo() . "<br>" . Connection::$conn->error;
           throw new Exception($e);
         }
     }
@@ -64,7 +65,7 @@
   
         return $orders;
         } catch (\Exception $e) {
-          echo "Error: " . $sql . "<br>" . Connection::$conn->error;
+          echo "Error: " . $sql->errorInfo() . "<br>" . Connection::$conn->error;
           throw new Exception($e);
         }
     }
@@ -153,7 +154,7 @@
 
         return $order;
       } catch (\Exception $e) {
-        echo "Error: " . $sql . "<br>" . Connection::$conn->error;
+        echo "Error: " . $sql->errorInfo() . "<br>" . Connection::$conn->error;
         throw new Exception($e);
       }
     }
@@ -170,7 +171,7 @@
   
         return $sql->rowCount();
         } catch (\Exception $e) {
-          echo "Error: " . $sql . "<br>" . Connection::$conn->error;
+          echo "Error: " . $sql->errorInfo() . "<br>" . Connection::$conn->error;
           throw new Exception($e);
         }
     }
@@ -189,7 +190,7 @@
   
         return $sql->rowCount();
         } catch (\Exception $e) {
-          echo "Error: " . $sql . "<br>" . Connection::$conn->error;
+          echo "Error: " . $sql->errorInfo() . "<br>" . Connection::$conn->error;
           throw new Exception($e);
         }
     }

@@ -13,14 +13,16 @@
 
     public function __construct(
       public int $user_id,
-      public string $user_role
+      public string $user_role,
+      public string $user_first_name
     ) {}
   }
 
   class GetAuthResponse {
     public function __construct(
       public GetUserDto $user,
-      public GetTokenDto $token
+      public GetTokenDto $token,
+      public ?array $favs = []
     ) {}
   }
 

@@ -9,7 +9,7 @@
       private float $value,
       private int $divided_max = 12,
       private float $paymentDiscount = 1,
-      private DateTime $expiredAt = null, 
+      private ?DateTime $expiredAt = null,
     ) {}
 
 

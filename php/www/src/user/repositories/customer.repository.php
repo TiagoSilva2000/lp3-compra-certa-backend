@@ -6,7 +6,7 @@
       try {
         $sql = Connection::$conn->prepare("
           INSERT INTO customer 
-            (:user_id)
+            (user_id)
           VALUES 
             (:user_id)"
         );
