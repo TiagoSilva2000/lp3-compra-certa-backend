@@ -91,10 +91,16 @@ $app->options("/payments/{id}", PreflightAction::class);
 $app->post('/orders', \OrderController::class . ':create');
 $app->get('/orders', \OrderController::class . ':list');
 $app->get('/orders/{id}', \OrderController::class . ':read');
-$app->patch('/orders/{id}', \OrderController::class . ':updateStatus');
+$app->post('/orders/{id}/{status}', \OrderController::class . ':updateStatus');
 $app->patch('/orders/{id}/received', \OrderController::class . ':setReceived');
 $app->get('/order-controls', \OrderController::class . ':controlList');
-$app->post('/orders/{id}/rating', \OrderController::class . ':rate');
+$app->post('/rating/{order_id}', \OrderController::class . ':rate');
+
+$app->options("/orders", PreflightAction::class);
+$app->options("/orders-controls", PreflightAction::class);
+$app->options("/orders/{id}", PreflightAction::class);
+$app->options("/orders/{id}/{status}", PreflightAction::class);
+$app->options("/rating/{order_id}", PreflightAction::class);
 
 $app->post('/auths', \AuthController::class . ':login');
 $app->delete('/auths/{token}', \AuthController::class . ':logout');

@@ -1,6 +1,7 @@
 <?php
   require_once (__DIR__ . '/../../address/dtos/address.dtos.php');
   require_once (__DIR__ . '/../../payment/dtos/payment.dtos.php');
+  //require_once (__DIR__ . '/../dtos/order-tracking.dtos.php');
 
   class CreateOrderPersonalDto {
     public function __construct(
@@ -49,10 +50,11 @@
     public function __construct(
       public int $id,
       public int $customer_id,
-      public Datetime $ordered_at,
+      public DateTime|string $ordered_at,
       public ?GetAddressDto $address = null,
       public ?GetOrderPaymentDto $payment = null,
       public array $products,
+      public ?array $tracking = [],
     ) {}
   }
   class GetOrderToControlDto {

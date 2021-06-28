@@ -1,10 +1,11 @@
 <?php
-  require_once (__DIR__ . '/../dtos/product-tracking.dtos.php');
+  require_once (__DIR__ . '/../dtos/order-tracking.dtos.php');
 
   class OrderTrackingRepository {
 
-    public static function create(int $orderId, CreateOrderTrackingDto $createPTDto): GetOrderTrackingDto {
+    public static function create(int $orderId, CreateOrderTrackingDto $createOTDto): GetOrderTrackingDto {
       try {
+        $formattedTime = $createOTDto->enterTime->format('Y-m-d H:i:s');
         $sql = Connection::$conn->prepare("
           INSERT INTO order_tracking 
             (order_id, order_status, enter_time, location_zipcode)
@@ -12,20 +13,20 @@
             (:order_id, :order_status, :enter_time, :location_zipcode)
         ");
         $sql->bindparam(":order_id", $orderId);
-        $sql->bindparam(":order_status", $createPTDto->orderStatus);
-        $sql->bindParam(":enter_time", $createPTDto->enterTime->format('Y-m-d H:i:s'), PDO::PARAM_STR);
-        $sql->bindparam(":location_zipcode", $createPTDto->location_zipcode);
+        $sql->bindparam(":order_status", $createOTDto->orderStatus);
+        $sql->bindParam(":enter_time", $formattedTime);
+        $sql->bindparam(":location_zipcode", $createOTDto->zipcode);
   
         $sql->execute();
         return new GetOrderTrackingDto (
           Connection::$conn->lastInsertId(),
           $orderId,
-          $createPTDto->enterTime,
-          $createPTDto->orderStatus,
-          $createPTDto->location_zipcode
+          $createOTDto->enterTime,
+          $createOTDto->orderStatus,
+          $createOTDto->zipcode
         );
         } catch (\Exception $e) {
-          echo "Error: " . $sql . "<br>" . Connection::$conn->error;
+          echo "Error: " . $sql->errorInfo() . "<br>" . Connection::$conn->error;
           throw new Exception($e);
         }
     }
@@ -54,7 +55,7 @@
 
         return $trackingPoints;
       } catch (\Exception $e) {
-        echo "Error: " . $sql . "<br>" . Connection::$conn->error;
+        echo "Error: " . $sql->errorInfo() . "<br>" . Connection::$conn->error;
         throw new Exception($e);
       }
     }

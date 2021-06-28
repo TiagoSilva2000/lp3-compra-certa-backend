@@ -12,7 +12,7 @@
     public function __construct(
       public int $id,
       public int $order_id,
-      public DateTime $enterTime,
+      public DateTime|string $enterTime,
       public string $orderStatus,
       public string $zipcode,
     ) {}

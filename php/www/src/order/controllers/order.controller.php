@@ -11,6 +11,7 @@
       $body = $request->getparsedBody();
       $payload = AuthService::getPayloadFromRequest($request);
 
+
       $createOrderDto = new CreateOrderDto(
         $body['total'],
         $body['products'],
@@ -40,16 +41,14 @@
           $body["address"]["details"],
           $body["address"]["owner_phone"]
         ));
-
-     // echo $createOrderDto->address->
-     // return $response;
       $order = OrderService::create($payload->user_id, $createOrderDto);
       return ControllerHelper::formatResponse($response, $order);
     }
     
     public static function list(Request $request, Response $response, array $args): Response {
-      
-      $orders = OrderService::list(intval($args['customer_id']));
+      $payload = AuthService::getPayloadFromRequest($request);
+
+      $orders = OrderService::list($payload->user_id);
       return ControllerHelper::formatResponse($response, $orders);
     }
 
@@ -66,22 +65,28 @@
     }
 
     public static function updateStatus(Request $request, Response $response, array $args): Response {
+      //$payload = AuthService::getPayloadFromRequest($request);
+      /*
+        if ($payload->user_role != UserType::$EMPLOYEE) {
+         throw new HttpUnauthorizedException($request);
+      }*/
       $body = $request->getparsedBody();
 
-      $message = OrderService::updateStatus(intval($args['orderId']), $body['status']);
+      $message = OrderService::updateStatus(intval($args['id']), $args['status']);
+
       return ControllerHelper::formatResponse($response, $message);
     }
 
     public static function setReceived(Request $request, Response $response, array $args): Response {
       
-      $message = OrderService::setReceived(intval($args['orderId']));
+      $message = OrderService::setReceived(intval($args['id']));
       return ControllerHelper::formatResponse($response, $message);
     }
 
     public static function rate(Request $request, Response $response, array $args): Response {
       $body = $request->getparsedBody();
 
-      $message = OrderService::rate(intval($args['orderId']), $body['productId'], $body['rating']);
+      $message = OrderService::rate(intval($args['order_id']), intval($body['product_id']), $body['rating']);
       return ControllerHelper::formatResponse($response, $message);
     }
   }

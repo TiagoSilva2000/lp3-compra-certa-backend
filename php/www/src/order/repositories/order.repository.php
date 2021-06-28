@@ -15,7 +15,7 @@
         $sql->bindparam(":customer_id", $customer_id);
         $sql->bindparam(":payment_id", $payment->id);
         $sql->bindparam(":address_id", $address->id);
-        $sql->bindParam(":ordered_at", $formattedNow, PDO::PARAM_STR);
+        $sql->bindParam(":ordered_at", $formattedNow);
         $sql->execute();
   
         return new GetOrderDto(
@@ -34,10 +34,50 @@
     
     public static function list(int $userId): array {
       try {
-        $sql = Connection::$conn->prepare("SELECT * FROM order");
+        $sql = Connection::$conn->prepare("
+            SELECT * FROM compracertadb.order as o
+                JOIN address as a
+                    ON o.address_id = a.id
+                JOIN payment as p
+                    ON o.payment_id = p.id
+            WHERE o.customer_id = :customer_id;
+        ");
+
         $orders = [];
+        $sql->bindParam(":customer_id", $userId);
         $sql->execute();
-  
+
+        while ($row = $sql->fetch()) {
+          $order = new GetOrderDto(
+            $row["id"],
+            $row["customer_id"],
+            $row["ordered_at"],
+            new GetAddressDto(
+              $row['id'],
+              $row['customer_id'],
+              $row['city'],
+              $row['state'],
+              $row['country'],
+              $row['zipcode'],
+              $row['street'],
+              $row['neighbour'],
+              $row['number'],
+              $row['details'],
+              $row['owner_phone'],
+              $row['owner_name'],
+              $row['default']
+            ),
+            new GetOrderPaymentDto(
+              $row["id"],
+              $row["total"],
+              $row["payment_status"]
+            ),
+            []
+          );
+
+          array_push($orders, $order);
+        }
+
         return $orders;
         } catch (\Exception $e) {
           echo "Error: " . $sql->errorInfo() . "<br>" . Connection::$conn->error;
@@ -48,22 +88,46 @@
     public static function controlList(): array {
       try {
         $sql = Connection::$conn->prepare("
-          SELECT * FROM order_products as op
-            JOIN order as o
-              ON op.order_id = o.id AND o.active = 1
-            JOIN product as prod
-              ON op.product_id = prod.id
-            JOIN address as a
-              ON o.address_id = a.id
+            SELECT * FROM compracertadb.order as o
+                JOIN address as a
+                    ON o.address_id = a.id
+                JOIN payment as p
+                    ON o.payment_id = p.id
+            WHERE o.received != 1 AND active != 0
         ");
         $orders = [];
         $sql->execute();
-        if ($row = $sql->fetch()) {
-          // $order = new GetOrderToControlDto(
-          // );
+
+        while ($row = $sql->fetch()) {
+          $order = new GetOrderDto(
+            $row["id"],
+            $row["customer_id"],
+            $row["ordered_at"],
+            new GetAddressDto(
+              $row['id'],
+              $row['customer_id'],
+              $row['city'],
+              $row['state'],
+              $row['country'],
+              $row['zipcode'],
+              $row['street'],
+              $row['neighbour'],
+              $row['number'],
+              $row['details'],
+              $row['owner_phone'],
+              $row['owner_name'],
+              $row['default']
+            ),
+            new GetOrderPaymentDto(
+              $row["id"],
+              $row["total"],
+              $row["payment_status"]
+            ),
+            []
+          );
+          array_push($orders, $order);
         }
-  
-        return $orders;
+          return $orders;
         } catch (\Exception $e) {
           echo "Error: " . $sql->errorInfo() . "<br>" . Connection::$conn->error;
           throw new Exception($e);
@@ -162,9 +226,9 @@
     public static function setReceived(int $orderId): int  {
       try {
         $sql = Connection::$conn->prepare("
-          UPDATE order
+          UPDATE compracertadb.order
             SET received = 1
-          WHERE order.id = :order_id"
+          WHERE compracertadb.order.id = :order_id"
         );
         $sql->bindparam(":order_id", $orderId);
         $sql->execute();
