@@ -78,7 +78,8 @@
     }
 
     public static function setReceived(Request $request, Response $response, array $args): Response {
-      
+
+
       $message = OrderService::setReceived(intval($args['id']));
       return ControllerHelper::formatResponse($response, $message);
     }

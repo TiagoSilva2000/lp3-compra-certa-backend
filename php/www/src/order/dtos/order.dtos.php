@@ -46,7 +46,17 @@
       public CreateOrderAddressDto $address,
     ) {}
   }
+
+  class GetOrderProductDto {
+    public function __construct(
+      public GetProductDto $product,
+      public int $qnt,
+      public ?float $rating = null
+    ) {}
+  }
   class GetOrderDto {
+    public string $tracking_code;
+
     public function __construct(
       public int $id,
       public int $customer_id,
@@ -55,7 +65,10 @@
       public ?GetOrderPaymentDto $payment = null,
       public array $products,
       public ?array $tracking = [],
-    ) {}
+      public ?bool $received = false
+    ) {
+      $tracking_code = strval($id) . strval($customer_id);
+    }
   }
   class GetOrderToControlDto {
     public function __construct(

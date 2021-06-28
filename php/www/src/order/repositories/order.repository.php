@@ -17,7 +17,7 @@
         $sql->bindparam(":address_id", $address->id);
         $sql->bindParam(":ordered_at", $formattedNow);
         $sql->execute();
-  
+
         return new GetOrderDto(
           Connection::$conn->lastInsertId(),
           $customer_id,
@@ -35,7 +35,8 @@
     public static function list(int $userId): array {
       try {
         $sql = Connection::$conn->prepare("
-            SELECT * FROM compracertadb.order as o
+            SELECT *, o.id as oid, a.id as aid, p.id as pid
+                FROM compracertadb.order as o
                 JOIN address as a
                     ON o.address_id = a.id
                 JOIN payment as p
@@ -49,11 +50,11 @@
 
         while ($row = $sql->fetch()) {
           $order = new GetOrderDto(
-            $row["id"],
+            $row["oid"],
             $row["customer_id"],
             $row["ordered_at"],
             new GetAddressDto(
-              $row['id'],
+              $row['aid'],
               $row['customer_id'],
               $row['city'],
               $row['state'],
@@ -68,11 +69,13 @@
               $row['default']
             ),
             new GetOrderPaymentDto(
-              $row["id"],
+              $row["pid"],
               $row["total"],
               $row["payment_status"]
             ),
-            []
+            [],
+            [],
+            $row["received"],
           );
 
           array_push($orders, $order);
@@ -123,7 +126,9 @@
               $row["total"],
               $row["payment_status"]
             ),
-            []
+            [],
+            [],
+            $row["received"],
           );
           array_push($orders, $order);
         }

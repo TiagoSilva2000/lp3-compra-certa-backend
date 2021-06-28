@@ -97,7 +97,7 @@ $app->get('/order-controls', \OrderController::class . ':controlList');
 $app->post('/rating/{order_id}', \OrderController::class . ':rate');
 
 $app->options("/orders", PreflightAction::class);
-$app->options("/orders-controls", PreflightAction::class);
+$app->options("/order-controls", PreflightAction::class);
 $app->options("/orders/{id}", PreflightAction::class);
 $app->options("/orders/{id}/{status}", PreflightAction::class);
 $app->options("/rating/{order_id}", PreflightAction::class);
