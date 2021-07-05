@@ -6,27 +6,27 @@
     public function __construct (
       private int $orderId,
       private string $placeZipcode,
-      private string $orderStatus,
-      private DateTime $enterTime = new DateTime(),
+      private string $order_status,
+      private ?DateTime $enter_time = null,
     ) {
       parent::__construct();
     }
 
 
       /**
-       * Get the value of enterTime
+       * Get the value of enter_time
        */
       public function getEnterTime()
       {
-            return $this->enterTime;
+            return $this->enter_time;
       }
 
       /**
-       * Set the value of enterTime
+       * Set the value of enter_time
        */
-      public function setEnterTime($enterTime) : self
+      public function setEnterTime($enter_time) : self
       {
-            $this->enterTime = $enterTime;
+            $this->enter_time = $enter_time;
 
             return $this;
       }
@@ -78,9 +78,9 @@
       /**
        * Set the value of orderStatusID
        */
-      public function setOrderStatus($orderStatus) : self
+      public function setOrderStatus($order_status) : self
       {
-            $this->orderStatus = $orderStatus;
+            $this->order_status = $order_status;
 
             return $this;
       }

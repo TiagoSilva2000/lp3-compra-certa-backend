@@ -48,7 +48,7 @@ $app->patch('/users', \UserController::class . ':recover');
 $app->options('/users', PreflightAction::class);
 $app->options('/users/{id}', PreflightAction::class);
 
-$app->get('/products/home', \ProductController::class . ':home');
+$app->get('/products/home', \ProductController::class . ':list');
 $app->post('/products', \ProductController::class . ':create');
 $app->post('/products/{id}/medias', \ProductController::class . ':addMediasToProduct');
 $app->patch('/products/{product_id}/medias/{id}', \ProductController::class . ':makeDefaultMedia');

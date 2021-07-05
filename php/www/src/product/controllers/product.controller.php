@@ -59,8 +59,11 @@ class ProductController {
     }
 
     public static function list(Request $request, Response $response, array $args): Response {
+      $category = $request->getQueryParams()["category"];
+      $pname = $request->getQueryParams()["name"];
+      $mappedCategory = EProductType::strToInt($category);
 
-      $products = ProductService::list(); 
+      $products = ProductService::list($mappedCategory, $pname); 
       return ControllerHelper::formatResponse($response, $products);
     }
 
@@ -113,10 +116,5 @@ class ProductController {
       $message = ['hello'];
       return ControllerHelper::formatResponse($response, $message);
     }
-
-
   }
-  
-
-
 ?>

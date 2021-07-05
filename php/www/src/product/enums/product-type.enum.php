@@ -12,17 +12,36 @@
     public static function intToStr(int $value) {
       switch ($value) {
         case self::$INFORMATIC:
-          return "informática";
+          return "informatica";
         case self::$ELETRODOMESTIC:
-          return "eletrodoméstico";
+          return "eletrodomestico";
         case self::$BOOK:
           return "livro";
         case self::$HOUSESTUFF:
           return "cama, mesa e banho";
         case self::$MOBILE:
-          return "móvel";
+          return "movel";
         case self::$TVANDVIDEO:
-          return "tv e vídeo";
+          return "tv e video";
+      }
+    }
+
+    public static function strToInt(string|null $value):int|null {
+      switch($value) {
+        case "informatica":
+          return self::$INFORMATIC;
+        case "eletrodomestico":
+          return self::$ELETRODOMESTIC;
+        case "livro":
+          return self::$BOOK;
+        case "cama, mesa e banho":
+          return self::$HOUSESTUFF;
+        case "movel":
+          return self::$MOBILE;
+        case "tv e video":
+          return self::$TVANDVIDEO;
+        default:
+          return null;
       }
     }
   }

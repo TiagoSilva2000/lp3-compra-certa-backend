@@ -5,7 +5,7 @@
 
     public static function create(int $orderId, CreateOrderTrackingDto $createOTDto): GetOrderTrackingDto {
       try {
-        $formattedTime = $createOTDto->enterTime->format('Y-m-d H:i:s');
+        $formattedTime = $createOTDto->enter_time->format('Y-m-d H:i:s');
         $sql = Connection::$conn->prepare("
           INSERT INTO order_tracking 
             (order_id, order_status, enter_time, location_zipcode)
@@ -13,7 +13,7 @@
             (:order_id, :order_status, :enter_time, :location_zipcode)
         ");
         $sql->bindparam(":order_id", $orderId);
-        $sql->bindparam(":order_status", $createOTDto->orderStatus);
+        $sql->bindparam(":order_status", $createOTDto->order_status);
         $sql->bindParam(":enter_time", $formattedTime);
         $sql->bindparam(":location_zipcode", $createOTDto->zipcode);
   
@@ -21,8 +21,8 @@
         return new GetOrderTrackingDto (
           Connection::$conn->lastInsertId(),
           $orderId,
-          $createOTDto->enterTime,
-          $createOTDto->orderStatus,
+          $createOTDto->enter_time,
+          $createOTDto->order_status,
           $createOTDto->zipcode
         );
         } catch (\Exception $e) {

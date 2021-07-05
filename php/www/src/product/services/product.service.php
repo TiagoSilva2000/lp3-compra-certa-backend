@@ -45,12 +45,12 @@
       return ProductRepository::home(); 
     }
 
-    public static function list(): array {
-      return ProductRepository::list();
+    public static function list(?int $pCategory = null, ?string $pname = null): array {
+      return ProductRepository::list($pCategory, $pname);
     }
 
     public static function listToShopcart(string $ids): array {
-      $products =  ProductRepository::list($ids);
+      $products =  ProductRepository::list();
       $returnedProducts = [];
       $arr = explode(',', $ids);
 

@@ -3,7 +3,7 @@
 
   class OrderEmployeeRepository {
 
-    public static function create(int $employeeId, int $orderId, string $orderStatus): GetEmployeeOrderDto {
+    public static function create(int $employeeId, int $orderId, string $order_status): GetEmployeeOrderDto {
       try {
         $sql = Connection::$conn->prepare("
           INSERT INTO employee_orders_assigned
@@ -13,14 +13,14 @@
         ");
         $sql->bindparam(":employee_id", $employeeId);
         $sql->bindparam(":order_id", $orderId);
-        $sql->bindparam(":order_status", $orderStatus);  
+        $sql->bindparam(":order_status", $order_status);  
         $sql->execute();
   
         return new GetEmployeeOrderDto(
           Connection::$conn->lastInsertId(),
           $employeeId,
           $orderId,
-          $orderStatus,
+          $order_status,
           new DateTime()
         );
       } catch (\Exception $e) {

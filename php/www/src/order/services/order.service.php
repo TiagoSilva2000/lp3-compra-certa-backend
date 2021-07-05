@@ -17,6 +17,7 @@
       ));
       foreach ($createOrderDto->products as &$product_id) {
         OrderProductRepository::create($order->id, $product_id);
+        ProductRepository::updateSoldQnt($product_id);
       }
 
 
@@ -31,8 +32,15 @@
       foreach($orders as $order) {
         $order->products = OrderProductRepository::list($order->id);
         $order->tracking = OrderTrackingRepository::list($order->id);
+        // usort($order->tracking, function ($a, $b) {
+        //   if ($a->enter_time == $b->enter_time)
+        //     return 0;
+        //   return $a->enter_time > $b->enter_time ? -1 : 1;
+        // });
+        $order->assigned_to = "empty";
+        $order->status = $order->tracking[count($order->tracking) - 1]->order_status ?? "preparing";
       }
-
+      
       return $orders;
     }
 
@@ -41,6 +49,14 @@
 
       foreach($orders as $order) {
         $order->products = OrderProductRepository::list($order->id);
+        $order->tracking = OrderTrackingRepository::list($order->id);
+        // usort($order->tracking, function ($a, $b) {
+        //   if ($a->enter_time == $b->enter_time)
+        //     return 0;
+        //   return $a->enter_time > $b->enter_time ? -1 : 1;
+        // });
+        $order->assigned_to = "empty";
+        $order->status = $order->tracking[count($order->tracking) - 1]->order_status ?? "preparing";
       }
 
       return $orders;
@@ -51,10 +67,10 @@
       return OrderRepository::read($orderId);
     }
 
-    public static function updateStatus(int $orderId, string $orderStatus): ResponseMessage {
+    public static function updateStatus(int $emp_id, int $orderId, string $order_status): ResponseMessage {
       $tracking = OrderTrackingRepository::create($orderId, new CreateOrderTrackingDto(
         new DateTime(),
-        $orderStatus,
+        $order_status,
         "48888322"
       ));
 

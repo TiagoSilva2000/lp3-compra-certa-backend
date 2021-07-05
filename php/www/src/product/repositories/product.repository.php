@@ -28,6 +28,22 @@
       }
     }
 
+    public static function updateSoldQnt(int $id): void {
+      try {
+        $sql = Connection::$conn->prepare("
+          UPDATE product
+            SET sold_qnt = sold_qnt + 1,
+                stock = stock - 1
+          WHERE id = :id AND stock > 0
+        ");
+        $sql->bindParam(":id", $id);
+        $sql->execute();
+      } catch (Exception $e) {
+        echo "Error: " . $sql->errorCode() . "<br>" . Connection::$conn->error;
+        throw new Exception($e);
+      }
+
+    }
 
     public static function home(): array {
       try {
@@ -56,7 +72,8 @@
             new GetPriceDto(
               $row['active_price'],
               $row['divided_max'],
-              $row['payment_discount']
+              $row['payment_discount'],
+              $row['active']
             )
           );
           array_push($products, $product);
@@ -70,9 +87,14 @@
 
     }
 
-    public static function list(string $ids = null): array {
+    public static function list(?int $pCategory = null, ?string $pname = null): array {
       //$whereString = "WHERE p.id IN (";
-
+      $whereString = $pCategory == null ? "" : " WHERE p.product_type_id = $pCategory";
+      
+      if ($pname != null) {
+        $whereString .= strlen($whereString) == 0 ? " WHERE " : " AND ";
+        $whereString .= 'p.name LIKE "%' . $pname . '%"';
+      }
       try {
         $sql = Connection::$conn->prepare("
             SELECT p.id, p.name, p.rating, p.product_type_id, p.description,
@@ -84,6 +106,7 @@
                     ON ph.product_id = p.id AND ph.active = 1
                 LEFT OUTER JOIN media as m
                     ON m.product_id = p.id AND m.main = 1
+            $whereString
         ");
         //$sql->bindParam(":ids", $ids);
         $sql->execute();

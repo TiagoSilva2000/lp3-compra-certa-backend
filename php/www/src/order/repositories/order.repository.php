@@ -166,15 +166,17 @@
             new GetAddressDto(
               $row['id'],
               $row['customer_id'],
-              $row['cep'], 
-              $row['street'], 
-              $row['neighbour'], 
-              $row['city'], 
-              $row['state'], 
-              $row['country'], 
-              $row['house_id'],
+              $row['city'],
+              $row['state'],
+              $row['country'],
+              $row['zipcode'],
+              $row['street'],
+              $row['neighbour'],
+              $row['number'],
               $row['details'],
-              $row['owner_phone']  
+              $row['owner_phone'],
+              $row['owner_name'],
+              $row['default']
             ),
             new GetOrderPaymentDto(
               $row['id'],
@@ -194,7 +196,8 @@
                 new GetPriceDto(
                   $row['active_price'],
                   $row['divided_max'],
-                  $row['payment_discount']
+                  $row['payment_discount'],
+                  $row["active"]
                 )
               )
             ]
@@ -214,7 +217,8 @@
             new GetPriceDto(
               $row['active_price'],
               $row['divided_max'],
-              $row['payment_discount']
+              $row['payment_discount'],
+              $row['active']
             )
           );
 

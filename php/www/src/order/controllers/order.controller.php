@@ -65,14 +65,14 @@
     }
 
     public static function updateStatus(Request $request, Response $response, array $args): Response {
-      //$payload = AuthService::getPayloadFromRequest($request);
+      $payload = AuthService::getPayloadFromRequest($request);
       /*
         if ($payload->user_role != UserType::$EMPLOYEE) {
          throw new HttpUnauthorizedException($request);
       }*/
       $body = $request->getparsedBody();
 
-      $message = OrderService::updateStatus(intval($args['id']), $args['status']);
+      $message = OrderService::updateStatus($payload->user_id, intval($args['id']), $args['status']);
 
       return ControllerHelper::formatResponse($response, $message);
     }

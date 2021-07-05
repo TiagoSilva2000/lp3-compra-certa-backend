@@ -5,7 +5,7 @@
     public function __construct(
       private string $empId,
       private Order $order,
-      private string $orderStatus,
+      private string $order_status,
       private DateTime $at
     ) {}
 
@@ -21,11 +21,11 @@
     }
 
     public function getStatus(): string {
-      return $this->orderStatus;
+      return $this->order_status;
     }
 
     public function setStatus(string $status) {
-      $this->orderStatus = $status;
+      $this->order_status = $status;
     }
 
     public function setAt(DateTime $at) {

@@ -1,7 +1,8 @@
 <?php
   require_once (__DIR__ . '/../../address/dtos/address.dtos.php');
   require_once (__DIR__ . '/../../payment/dtos/payment.dtos.php');
-  //require_once (__DIR__ . '/../dtos/order-tracking.dtos.php');
+  //require_once (__DIR__ . '/../dtos/order-tracking.dtos.php');  
+  require_once (__DIR__ . '/../enums/order-status.enum.php');
 
   class CreateOrderPersonalDto {
     public function __construct(
@@ -65,9 +66,15 @@
       public ?GetOrderPaymentDto $payment = null,
       public array $products,
       public ?array $tracking = [],
-      public ?bool $received = false
+      public ?bool $received = false,
+      public ?string $status = null,
+      public ?string $assigned_to = null
     ) {
-      $tracking_code = strval($id) . strval($customer_id);
+      $v = strval(rand());
+      $this->tracking_code = strval($id) . "88944" . strval($customer_id);
+      // $this->status = OrderStatus::intToStr(OrderStatus::$PREPARING);
+      $this->status = "preparing";
+      $this->assigned_to = "empty";
     }
   }
   class GetOrderToControlDto {
